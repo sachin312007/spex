@@ -7,7 +7,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   // --- UNDER ₹49 ---
   {
     id: "budget-panipuri-1",
-    name: "Artisanal Spiced Pani Puri",
+    name: "Pani Puri",
     description: "Crisp puffed puris filled with spiced potato mash, sweet tamarind chutney, and chilled mint-infused water.",
     category: "Snacks",
     price: 45,
@@ -25,7 +25,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-golgappa-1",
-    name: "Classic Street Golgappa Platter",
+    name: "Golgappa",
     description: "Authentic puffed hollow bread served with seasoned boiled yellow peas and fiery double-spiced herbal water.",
     category: "Snacks",
     price: 40,
@@ -42,7 +42,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-samosa-1",
-    name: "Golden Crispy Punjabi Samosa",
+    name: "Samosa",
     description: "Flaky pastry pockets packed with a rich mixture of crushed potatoes, green peas, ginger, and roasted spices.",
     category: "Snacks",
     price: 35,
@@ -59,7 +59,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-breadpakora-1",
-    name: "Spiced Paneer Bread Pakora",
+    name: "Bread Pakora",
     description: "Thick hand-sliced bread stuffed with seasoned potato and paneer, dipped in carom-scented gram batter and golden fried.",
     category: "Snacks",
     price: 45,
@@ -76,7 +76,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-tea-1",
-    name: "Cardamom & Ginger Cutting Chai",
+    name: "Tea",
     description: "Strongly brewed milk tea infused with freshly crushed green cardamom, grated ginger root, and refined sugar.",
     category: "Beverages",
     price: 25,
@@ -93,7 +93,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-smallfries-1",
-    name: "Crispy Peri-Peri Small Fries",
+    name: "Small Fries",
     description: "Golden-brown potato fries tossed in a spicy, tangy dry Peri-Peri seasoning served hot with house mayonnaise.",
     category: "Snacks",
     price: 49,
@@ -112,7 +112,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   // --- UNDER ₹99 ---
   {
     id: "budget-chowmein-1",
-    name: "Wok-Tossed Gourmet Chowmein",
+    name: "Chowmein",
     description: "Stir-fried yellow noodles tossed with crisp cabbage juliennes, capsicum, wild onion greens, and rich dark soy sauce.",
     category: "Chinese",
     price: 95,
@@ -129,7 +129,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-springroll-1",
-    name: "Crisp Golden Veg Spring Rolls",
+    name: "Spring Roll",
     description: "Hand-rolled flaky wrappers loaded with wok-charred oriental vegetables, deep fried till amber and crisp.",
     category: "Chinese",
     price: 89,
@@ -146,7 +146,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-momos-1",
-    name: "Classic Steamed Veg Momos",
+    name: "Momos",
     description: "Pillowy thin-wrapped dumplings loaded with finely minced farm vegetables and wild garlic, served with premium Sichuan dip.",
     category: "Chinese",
     price: 99,
@@ -163,7 +163,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-vadapav-1",
-    name: "Lajpat Street Ghati Vada Pav",
+    name: "Vada Pav",
     description: "Spiced potato dumpling fried in gram batter, nestled inside a fluffy buttered roll smeared with dry garlic-coconut chutney.",
     category: "Snacks",
     price: 75,
@@ -180,7 +180,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-dabeli-1",
-    name: "Spicy Kutchi Dabeli",
+    name: "Dabeli",
     description: "Buttered pav filled with sweet and spicy mashed potato, doused in garlic chutney, topped with fresh pomegranates and salty sev.",
     category: "Snacks",
     price: 69,
@@ -197,7 +197,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-chillipotato-1",
-    name: "Crispy Honey Chilli Potato",
+    name: "Chilli Potato",
     description: "Crisp potato fingers glazed with honey, dark soy sauce, crushed chili paste, garlic, and sprinkled sesame seeds.",
     category: "Chinese",
     price: 95,
@@ -216,9 +216,9 @@ export const BUDGET_FOODS: FoodItem[] = [
   // --- UNDER ₹149 ---
   {
     id: "budget-paneertikka-1",
-    name: "Charcoal Paneer Tikka Single",
+    name: "Paneer Tikka",
     description: "Soft tandoori paneer cubes skewered with crisp peppers, marinated in yogurt mustard oil, and grilled in hot clay oven.",
-    category: "Burger",
+    category: "Snacks",
     price: 139,
     rating: 4.8,
     reviewCount: 780,
@@ -233,7 +233,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-pavbhaji-1",
-    name: "Butter-rich Traditional Pav Bhaji",
+    name: "Pav Bhaji",
     description: "A steaming aromatic curry of mashed seasonal vegetables cooked in home spices, served with two soft toasted white rolls dripping with Amul butter.",
     category: "Snacks",
     price: 129,
@@ -250,7 +250,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-hakkanoodles-1",
-    name: "Classic Special Hakka Noodles",
+    name: "Hakka Noodles",
     description: "Wok-fried premium noodles cooked in light sesame oil with celery, green chili strings, and colorful bell pepper strips.",
     category: "Chinese",
     price: 139,
@@ -267,7 +267,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-frankieroll-1",
-    name: "Masala Aloo Frankie Roll",
+    name: "Frankie Roll",
     description: "Crisp wheat flatbread layered with chili spread, a golden fried spicy potato roll, onions, sweet spices, and vinegar garnish.",
     category: "Snacks",
     price: 119,
@@ -284,7 +284,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-alootikkicombo-1",
-    name: "Shahi Aloo Tikki Chole Combo",
+    name: "Aloo Tikki Combo",
     description: "Two golden-fried crisp potato patties served over a rich spiced chickpea dhal curry, laced with cool yogurt and dynamic chutneys.",
     category: "Combo",
     price: 145,
@@ -303,7 +303,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   // --- UNDER ₹199 ---
   {
     id: "budget-burger-1",
-    name: "Super Crispy Veggie Double Burger",
+    name: "Burger",
     description: "Two crunchy grain-veg patties stacked inside grilled sesame buns with iceberg lettuce, tomatoes, and dynamic spex burger spread.",
     category: "Burger",
     price: 169,
@@ -320,7 +320,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-pizzaslice-1",
-    name: "Gourmet Margherita Slice with Soda",
+    name: "Pizza Slice Combo",
     description: "A generous slice of hand-tossed sourdough pizza baked with creamy mozzarella and fresh sweet basil leaves, served with cold lemon lime soda.",
     category: "Combo",
     price: 189,
@@ -337,7 +337,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-manchuriancombo-1",
-    name: "Garlic Fried Rice & Manchurian Combo",
+    name: "Manchurian Combo",
     description: "A highly filling portion of chef's wok-tossed garlic jasmine fried rice served with four succulent vegetable balls cooked in rich black ginger gravy.",
     category: "Combo",
     price: 179,
@@ -354,7 +354,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-cholebhature-1",
-    name: "Spiced Amritsari Chole Bhature",
+    name: "Chole Bhature",
     description: "Two fluffy, golden puffed fried sourdough breads served with thick, dark spiced chickpea curry cooked with pure ginger juliennes and whole herbs.",
     category: "North Indian",
     price: 189,
@@ -373,7 +373,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   // --- UNDER ₹249 ---
   {
     id: "budget-cheeseburgermeal-1",
-    name: "Melted Cheddar Cheese Burger Platter",
+    name: "Cheese Burger Meal",
     description: "A loaded crisp vegetable burger with thick hot cheddar glaze pouring inside, accompanied by warm golden fries and spex special herb mayonnaise.",
     category: "Burger",
     price: 229,
@@ -390,7 +390,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-noodcombo-1",
-    name: "Wok Chilli Noodles & Paneer Combo",
+    name: "Premium Noodles Combo",
     description: "Chef's seasoned chili garlic soft noodles presented alongside succulent, moist paneer triangles stir-fried with dark soy, sesame and scallions.",
     category: "Combo",
     price: 239,
@@ -407,7 +407,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-paneermealcombo-1",
-    name: "Shahi Paneer Butter Masala Thali",
+    name: "Paneer Meal Combo",
     description: "A gourmet tray containing rich Paneer Butter Masala curry, aromatic ghee pulao rice, black dal makhani, and two hot buttered tandoor naans.",
     category: "Combo",
     price: 245,
@@ -426,7 +426,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   // --- UNDER ₹299 ---
   {
     id: "budget-fullpizza-1",
-    name: "Rich Basil Pesto Margherita Pizza",
+    name: "Full Pizza",
     description: "An authentic flatbread crust smeared with premium green basil pesto sauce, layered with mozzarella cheese slices and sundried sweet cherry tomatoes.",
     category: "Pizza",
     price: 289,
@@ -443,7 +443,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-corndog-1",
-    name: "Seoul Crispy Cheese Corn Dog Duo",
+    name: "Korean Corn Dog Combo",
     description: "Two golden panko-crusted skewers boasting stretchy mozzarella cheese blocks and sweet potato cubes, rolled in sugar and drizzled with hot sriracha.",
     category: "Combo",
     price: 279,
@@ -460,7 +460,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-ramenbowl-1",
-    name: "Rich Miso Tandoor Paneer Ramen",
+    name: "Ramen Bowl",
     description: "A hot, comforting bowl of premium mineral-water noodles submerged in creamy miso broth, styled with golden tandoori paneer skewers, spinach, and hot chili oil.",
     category: "Chinese",
     price: 299,
@@ -477,7 +477,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-chefburger-1",
-    name: "Imperial Charcoal Truffle Burger",
+    name: "Chef Special Burger",
     description: "A thick grill-charred portobello mushroom stuffed with creamy gouda cheese, glazed with sweet dynamic black truffle oil-infused spread in brioche buns.",
     category: "Burger",
     price: 269,
@@ -496,7 +496,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   // --- UNDER ₹399 ---
   {
     id: "budget-sushiplatter-1",
-    name: "Premium Saffron Avocado Maki Platter",
+    name: "Sushi Platter",
     description: "Eight meticulously structured maki rolls featuring buttery avocado flesh, sweetened organic mango strings, and hand-rolled premium sushi rice sheets.",
     category: "Chinese",
     price: 389,
@@ -513,7 +513,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-piizacombo-1",
-    name: "Spex Double Cheese Pizza & Chiller Combo",
+    name: "Premium Pizza Combo",
     description: "A whole 9-inch hand-tossed fresh paneer and green capsicum cheesy pizza served with two cold craft ginger juices.",
     category: "Combo",
     price: 379,
@@ -530,8 +530,8 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-kfmeal-1",
-    name: "Sweet & Spicy Korean Fried Tofu Meal",
-    description: "Super crispy puffed organic tofu chunks glazed in authentic fermented gochujang sauce, served on premium sticky rice with sesame flakes.",
+    name: "Korean Fried Chicken Meal",
+    description: "Super crispy succulent premium glaze-fried chicken chunks coated with authentic fermented sweet and spicy gochujang sauce, served on premium sticky rice with sesame flakes.",
     category: "Combo",
     price: 369,
     rating: 4.7,
@@ -539,7 +539,7 @@ export const BUDGET_FOODS: FoodItem[] = [
     tags: ["High Crunch", "Szechuan Glow"],
     prepTime: 20,
     calories: 490,
-    image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=600&auto=format&fit=crop&q=80",
     isBestSeller: false,
     isTrending: true,
     isChefSpecial: false,
@@ -549,8 +549,8 @@ export const BUDGET_FOODS: FoodItem[] = [
   // --- UNDER ₹499 ---
   {
     id: "budget-familycombo-1",
-    name: "Luxe Maharaja Family Thali Feast",
-    description: "An ultra-premium tray carrying generous black dal, rich butter paneer, fresh malai kofta, cumin pulao, four buttered naans, garden salad, and sweet gulab jamuns.",
+    name: "Family Combo",
+    description: "An ultra-premium thali feast carrying generous black dal makhani, rich butter paneer, fresh malai kofta, cumin pulao, four buttered naans, garden salad, and sweet gulab jamuns.",
     category: "Combo",
     price: 479,
     rating: 4.9,
@@ -566,7 +566,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-partypack-1",
-    name: "Grand Feast Combo Party Pack",
+    name: "Party Pack",
     description: "A collection of 2 Crispy Paneer Burgers, a double-sized portion of wok-fried chowmein, 6 steamed vegetable momos, and 2 bottles of artisanal iced teas.",
     category: "Combo",
     price: 499,
@@ -583,7 +583,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-sharingbox-1",
-    name: "Sizzling Kebab & Premium Appetizer Box",
+    name: "Premium Sharing Box",
     description: "An assortative luxury box holding grilled paneer seekh skewers, clay-roasted vegetable tikkas, crispy corn dogs, and premium chili-dipping sauces.",
     category: "Combo",
     price: 489,
@@ -602,7 +602,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   // --- PREMIUM SPECIALS ---
   {
     id: "budget-sushiroll-1",
-    name: "Chef's Imperial Golden Velvet Sushi Roll",
+    name: "Sushi Roll",
     description: "Delicate vinegared rice rolled with dynamic black truffle strips, sweet pickled squash, crisp cucumber, brushed with sweet soy and gold flakes.",
     category: "Chinese",
     price: 549,
@@ -619,7 +619,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-tiramisu-1",
-    name: "Premium Saffron Espresso Tiramisu",
+    name: "Tiramisu",
     description: "Delicate Italian sponge cake layers drenched in strong espresso, filled with organic saffron-mascarpone cream and raw Dutch cocoa powder.",
     category: "Desserts",
     price: 529,
@@ -636,7 +636,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-cheesecake-1",
-    name: "New York Premium Strawberry Cheesecake",
+    name: "Cheesecake",
     description: "A silky smooth rich cheese batter baked on hand-pressed butter-graham cookie crust, topped with fresh crushed strawberries preserve.",
     category: "Desserts",
     price: 519,
@@ -653,7 +653,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-waffle-1",
-    name: "Gourmet Dark Chocolate Belgian Waffle",
+    name: "Belgian Waffle",
     description: "Warm freshly iron-baked thick waffle dripping with molten premium Belgian chocolate syrup and paired with light vanilla custard whipped swirl.",
     category: "Desserts",
     price: 509,
@@ -670,7 +670,7 @@ export const BUDGET_FOODS: FoodItem[] = [
   },
   {
     id: "budget-chefspec-1",
-    name: "The Gold Card Private Reserve Thali Platter",
+    name: "Chef Signature Specials",
     description: "The ultimate Spex masterwork: featuring woodfired cottage cheese steak, rich tandoori smoked cashew curry, pure saffron rice, wild flower organic honey tea, and warm spiced date cake.",
     category: "Combo",
     price: 699,
