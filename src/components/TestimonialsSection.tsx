@@ -129,8 +129,15 @@ export default function TestimonialsSection() {
   };
 
   return (
-    <section className="bg-gradient-to-b from-[#0d0d0d] to-[#080808] py-20 border-t border-neutral-900 overflow-hidden" id="testimonials-reviews-terminal">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="bg-gradient-to-b from-[#0d0d0d] to-[#080808]/40 py-20 border-t border-neutral-900 overflow-hidden relative" id="testimonials-reviews-terminal">
+      {/* Downward Orange Glow Vignette and Ambient Light System */}
+      <div className="absolute bottom-0 inset-x-0 h-96 bg-gradient-to-t from-[#FF5A1F]/15 via-[#FF5A1F]/4 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 -translate-x-1/2 w-[450px] h-[180px] bg-[#FF5A1F]/10 rounded-full blur-[110px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 translate-x-1/2 w-[450px] h-[180px] bg-[#FF8C42]/8 rounded-full blur-[115px] pointer-events-none" />
+      {/* Subtle bottom edge orange-amber borders shine */}
+      <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#FF5A1F]/30 to-transparent pointer-events-none" />
+      
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Header decoration */}
         <div className="flex flex-col items-center text-center space-y-4 mb-16">

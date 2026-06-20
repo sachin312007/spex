@@ -12,12 +12,14 @@ import UserDashboard from './components/UserDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import AIChatModal from './components/AIChatModal';
 import TestimonialsSection from './components/TestimonialsSection';
-import { FoodItem, CartItem, Order, Review, UserProfile, Address, Coupon, OrderStatus, AddOn } from './types';
+import SwipeDeck from './components/SwipeDeck';
+import ReservationsSection from './components/ReservationsSection';
+import { FoodItem, CartItem, Order, Review, UserProfile, Address, Coupon, OrderStatus, AddOn, Reservation } from './types';
 import { LogIn, ArrowRight, X, Heart, Star, Sparkles, Navigation, CookingPot, Flame, ShieldCheck } from 'lucide-react';
 
 export default function App() {
   // Navigation
-  const [activeView, setActiveView] = useState<'home' | 'menu' | 'user' | 'admin' | 'tracking'>('home');
+  const [activeView, setActiveView] = useState<'home' | 'menu' | 'user' | 'admin' | 'tracking' | 'reservations'>('home');
 
   // Server Sourced States
   const [foods, setFoods] = useState<FoodItem[]>([]);
@@ -25,6 +27,37 @@ export default function App() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [addresses, setAddresses] = useState<Address[]>([]);
+
+  // Reservations State
+  const [reservations, setReservations] = useState<Reservation[]>(() => {
+    try {
+      const saved = localStorage.getItem('spex_reservations');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Sync reservations to local storage
+  useEffect(() => {
+    localStorage.setItem('spex_reservations', JSON.stringify(reservations));
+  }, [reservations]);
+
+  const handleAddReservation = (newRes: Omit<Reservation, 'id' | 'createdAt' | 'status'>) => {
+    const fresh: Reservation = {
+      id: `RES-${Math.floor(100000 + Math.random() * 900000)}`,
+      ...newRes,
+      status: 'Confirmed',
+      createdAt: new Date().toISOString()
+    };
+    setReservations(prev => [fresh, ...prev]);
+  };
+
+  const handleCancelReservation = (id: string) => {
+    setReservations(prev =>
+      prev.map(r => r.id === id ? { ...r, status: 'Cancelled' as const } : r)
+    );
+  };
 
   // Local/Temporary State
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -573,6 +606,14 @@ export default function App() {
                 </div>
               </div>
 
+              {/* Special Tinder-Style Culinary Swipe Deck */}
+              <SwipeDeck
+                foods={foods}
+                addToCart={addToCart}
+                toggleWishlist={toggleWishlist}
+                wishlist={wishlist}
+              />
+
               {/* Noticeable Veg Meal Varieties Section */}
               <VegSection
                 foods={foods}
@@ -748,6 +789,23 @@ export default function App() {
             </motion.div>
           )}
 
+          {activeView === 'reservations' && (
+            <motion.div
+              key="reservations"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <ReservationsSection
+                user={user}
+                reservations={reservations}
+                onAddReservation={handleAddReservation}
+                onCancelReservation={handleCancelReservation}
+                toggleLoginModal={() => setIsLoginModalOpen(true)}
+              />
+            </motion.div>
+          )}
+
           {activeView === 'user' && (
             <motion.div
               key="user"
@@ -918,15 +976,12 @@ export default function App() {
               </div>
               
               {/* Sachin Pal developer credit badge */}
-              <div className="flex items-center gap-2 bg-[#0c0c0c] border border-neutral-900 px-3 py-1.5 rounded-xl hover:border-emerald-500/20 transition-all duration-300">
-                <img 
-                  src="https://images.unsplash.com/photo-1624561172888-ac93c696e10c?w=150&auto=format&fit=crop&q=80" 
-                  alt="Sachin Pal" 
-                  referrerPolicy="no-referrer"
-                  className="h-6 w-6 rounded-lg object-cover grayscale border border-neutral-800"
-                />
-                <span className="text-[11px] text-neutral-400 font-mono tracking-wide">
-                  — by <span className="font-sans font-bold text-white hover:text-emerald-400 transition-colors">Sachin Pal</span>
+              <div className="flex items-center gap-1.5 bg-[#0a0a0a] border border-neutral-900 px-3 py-1 rounded-lg select-none">
+                <span className="text-[10px] font-mono tracking-widest uppercase text-neutral-500">
+                  SYSTEM:
+                </span>
+                <span className="font-mono text-xs font-bold bg-gradient-to-r from-white to-[#FF5A1F] bg-clip-text text-transparent tracking-widest uppercase">
+                  by Sachin Pal
                 </span>
               </div>
             </div>

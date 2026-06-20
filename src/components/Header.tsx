@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ShoppingBag, Heart, User, ShieldAlert, Sparkles, LogIn, Menu, X, PlusCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../types';
@@ -6,8 +6,8 @@ import { UserProfile } from '../types';
 interface HeaderProps {
   cartCount: number;
   wishlistCount: number;
-  activeView: 'home' | 'menu' | 'user' | 'admin' | 'tracking';
-  setActiveView: (view: 'home' | 'menu' | 'user' | 'admin' | 'tracking') => void;
+  activeView: 'home' | 'menu' | 'user' | 'admin' | 'tracking' | 'reservations';
+  setActiveView: (view: 'home' | 'menu' | 'user' | 'admin' | 'tracking' | 'reservations') => void;
   openCart: () => void;
   user: UserProfile | null;
   toggleLoginModal: () => void;
@@ -25,11 +25,28 @@ export default function Header({
   toggleAIModal,
 }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isPulsing, setIsPulsing] = useState(false);
+  const [prevCartCount, setPrevCartCount] = useState(cartCount);
+
+  if (cartCount !== prevCartCount) {
+    if (cartCount > prevCartCount) {
+      setIsPulsing(true);
+    }
+    setPrevCartCount(cartCount);
+  }
+
+  useEffect(() => {
+    if (isPulsing) {
+      const timer = setTimeout(() => setIsPulsing(false), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [isPulsing]);
 
   const navLinks = [
     { id: 'home', label: 'Home' },
     { id: 'menu', label: 'Interactive Menu' },
     { id: 'tracking', label: 'Live Tracking' },
+    { id: 'reservations', label: 'Reservations' },
   ];
 
   return (
@@ -195,18 +212,31 @@ export default function Header({
           </button>
 
           {/* Shopping Bag / Cart */}
-          <button
+          <motion.button
+            animate={isPulsing ? {
+              scale: [1, 1.25, 0.9, 1.1, 1],
+              rotate: [0, -12, 12, -6, 6, 0],
+              borderColor: ['rgba(38, 38, 38, 1)', 'rgba(255, 90, 31, 1)', 'rgba(255, 90, 31, 1)', 'rgba(38, 38, 38, 1)'],
+              backgroundColor: ['rgba(23, 23, 23, 1)', 'rgba(255, 90, 31, 0.15)', 'rgba(255, 90, 31, 0.1)', 'rgba(23, 23, 23, 1)'],
+            } : {}}
+            transition={{ duration: 0.6, ease: 'easeInOut' }}
             onClick={openCart}
             className="relative flex items-center justify-center p-2.5 text-white bg-neutral-900 border border-neutral-800 hover:border-[#FF5A1F]/40 rounded-xl hover:bg-neutral-800 transition-all cursor-pointer"
             id="cart-header-btn"
           >
             <ShoppingBag className="h-5 w-5 text-[#FF5A1F]" />
             {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-tr from-[#FF5A1F] to-[#FF8C42] text-[10px] font-black text-white shadow-lg shadow-[#FF5A1F]/20 animate-bounce">
+              <motion.span
+                animate={isPulsing ? {
+                  scale: [1, 1.4, 0.9, 1.15, 1],
+                } : {}}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+                className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-tr from-[#FF5A1F] to-[#FF8C42] text-[10px] font-black text-white shadow-lg shadow-[#FF5A1F]/20"
+              >
                 {cartCount}
-              </span>
+              </motion.span>
             )}
-          </button>
+          </motion.button>
 
           {/* User Profile Login / Account Dashboard */}
           {user ? (

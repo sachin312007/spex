@@ -89,16 +89,17 @@ export default function CartDrawer({
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.6 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
             onClick={onClose}
-            className="fixed inset-0 z-50 bg-[#0d0d0d] cursor-pointer"
+            className="fixed inset-0 z-50 bg-[#0d0d0d] cursor-pointer backdrop-blur-sm"
           />
 
           {/* Drawer Sheet */}
           <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            initial={{ x: '100%', opacity: 0.95 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: '100%', opacity: 0.95 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 240 }}
             className="fixed right-0 top-0 bottom-0 z-50 flex h-full w-full max-w-md flex-col bg-[#171717] border-l border-neutral-800 shadow-2xl"
             id="shopping-cart-drawer"
           >
@@ -136,16 +137,21 @@ export default function CartDrawer({
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {activeItems.map((item) => {
-                    const f = foods.find((food) => food.id === item.foodId);
-                    if (!f) return null;
+                  <AnimatePresence mode="popLayout">
+                    {activeItems.map((item) => {
+                      const f = foods.find((food) => food.id === item.foodId);
+                      if (!f) return null;
 
-                    return (
-                      <motion.div
-                        key={item.foodId}
-                        layout
-                        className="rounded-xl border border-neutral-800 bg-[#0d0d0d] p-3 space-y-3"
-                      >
+                      return (
+                        <motion.div
+                          key={item.foodId}
+                          layout
+                          initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.18 } }}
+                          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                          className="rounded-xl border border-neutral-800 bg-[#0d0d0d] p-3 space-y-3"
+                        >
                         <div className="flex gap-3">
                           {/* Image preview */}
                           <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-neutral-900 border border-neutral-800">
@@ -268,6 +274,7 @@ export default function CartDrawer({
                       </motion.div>
                     );
                   })}
+                  </AnimatePresence>
                 </div>
               )}
 

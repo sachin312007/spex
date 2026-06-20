@@ -101,3 +101,18 @@ export interface UserProfile {
   loyaltyTier: 'Silver' | 'Gold' | 'Platinum';
   avatar?: string;
 }
+
+export interface Reservation {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  date: string;
+  time: string;
+  guests: number;
+  seatingArea: string;
+  specialRequests?: string;
+  status: 'Confirmed' | 'Cancelled';
+  createdAt: string;
+}
+

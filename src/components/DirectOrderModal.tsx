@@ -47,10 +47,40 @@ export default function DirectOrderModal({
   const [selectedPayment, setSelectedPayment] = useState<string>('UPI');
   const [notes, setNotes] = useState('');
   
-  // Custom user details (for Guest or logged-in overrides)
-  const [guestName, setGuestName] = useState(user?.name || '');
-  const [guestPhone, setGuestPhone] = useState(user?.phone || '');
-  const [guestEmail, setGuestEmail] = useState(user?.email || '');
+  // Custom user details (for Guest or logged-in overrides, caching in localStorage for returning users)
+  const [guestName, setGuestName] = useState(() => {
+    if (user?.name) return user.name;
+    try {
+      const saved = localStorage.getItem('spex_guest_details');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.name || '';
+      }
+    } catch (_) {}
+    return '';
+  });
+  const [guestPhone, setGuestPhone] = useState(() => {
+    if (user?.phone) return user.phone;
+    try {
+      const saved = localStorage.getItem('spex_guest_details');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.phone || '';
+      }
+    } catch (_) {}
+    return '';
+  });
+  const [guestEmail, setGuestEmail] = useState(() => {
+    if (user?.email) return user.email;
+    try {
+      const saved = localStorage.getItem('spex_guest_details');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.email || '';
+      }
+    } catch (_) {}
+    return '';
+  });
 
   // Address Selector States
   const [selectedAddressId, setSelectedAddressId] = useState<string>(addresses[0]?.id || 'temporary');
@@ -79,6 +109,18 @@ export default function DirectOrderModal({
       setGuestEmail(user.email);
     }
   }, [user]);
+
+  // Sync current credentials changes to localStorage
+  useEffect(() => {
+    try {
+      if (guestName || guestPhone || guestEmail) {
+        localStorage.setItem(
+          'spex_guest_details',
+          JSON.stringify({ name: guestName, phone: guestPhone, email: guestEmail })
+        );
+      }
+    } catch (_) {}
+  }, [guestName, guestPhone, guestEmail]);
 
   // Handle setting default selected address when addresses list loads
   useEffect(() => {
