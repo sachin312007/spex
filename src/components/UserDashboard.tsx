@@ -221,15 +221,17 @@ export default function UserDashboard({
                           {ord.deliveryNotes ? `Note: "${ord.deliveryNotes}"` : 'Packed in medical-grade sterile heat chambers.'}
                         </p>
                         
-                        {onReorder && (
-                          <button
+                        {onReorder && ord.status === 'Delivered' && (
+                          <motion.button
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
                             type="button"
                             onClick={() => onReorder(ord)}
-                            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-neutral-950 to-neutral-900 hover:from-[#FF5A1F] hover:to-[#FF8C42] border border-[#FF5A1F]/30 hover:border-[#FF5A1F] transition text-white px-4.5 py-2 text-xs font-bold shadow-lg cursor-pointer group select-none active:scale-[0.98]"
+                            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-neutral-950 to-neutral-900 hover:from-[#FF5A1F] hover:to-[#FF8C42] border border-[#FF5A1F]/30 hover:border-[#FF5A1F] transition text-white px-4.5 py-2 text-xs font-bold shadow-lg cursor-pointer group select-none"
                           >
                             <ShoppingBag className="h-3 w-3 text-[#FF5A1F] group-hover:text-white transition-colors" />
                             <span className="group-hover:text-white">Reorder Feast</span>
-                          </button>
+                          </motion.button>
                         )}
                       </div>
                     </div>
