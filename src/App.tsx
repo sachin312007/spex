@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import ErrorBoundary from './components/ErrorBoundary';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import MenuSection from './components/MenuSection';
@@ -8,17 +9,49 @@ import CheckoutModal from './components/CheckoutModal';
 import DirectOrderModal from './components/DirectOrderModal';
 import VegSection from './components/VegSection';
 import TrackingSection from './components/TrackingSection';
-import UserDashboard from './components/UserDashboard';
-import AdminDashboard from './components/AdminDashboard';
-import AIChatModal from './components/AIChatModal';
 import TestimonialsSection from './components/TestimonialsSection';
 import SwipeDeck from './components/SwipeDeck';
 import FoodDiscoverySlider, { DISCOVERY_ITEMS } from './components/FoodDiscoverySlider';
-import ReservationsSection from './components/ReservationsSection';
+import OrderByBudget, { BUDGET_FOODS } from './components/OrderByBudget';
+
+// Code Splitting & Lazy-Loaded Bundles for high performance scaling to 10k+ concurrent users
+const UserDashboard = React.lazy(() => import('./components/UserDashboard'));
+const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
+const AIChatModal = React.lazy(() => import('./components/AIChatModal'));
+const ReservationsSection = React.lazy(() => import('./components/ReservationsSection'));
 import { FoodItem, CartItem, Order, Review, UserProfile, Address, Coupon, OrderStatus, AddOn, Reservation } from './types';
 import { LogIn, ArrowRight, X, Heart, Star, Sparkles, Navigation, CookingPot, Flame, ShieldCheck } from 'lucide-react';
 
 export default function App() {
+  // Global Animated Toast Notification system
+  const [toasts, setToasts] = useState<{ id: string; message: string; type: 'success' | 'info' | 'error' | 'warning' }[]>([]);
+
+  const showToast = (message: string, type: 'success' | 'info' | 'error' | 'warning' = 'info') => {
+    const id = Math.random().toString(36).substring(2, 9);
+    setToasts((prev) => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 4500);
+  };
+
+  // Intercept standard alert functions with beautiful non-blocking in-app notifications
+  useEffect(() => {
+    const handleInterceptAlert = (msg: string) => {
+      let type: 'success' | 'info' | 'error' | 'warning' = 'info';
+      const m = msg.toLowerCase();
+      if (m.includes('fail') || m.includes('error') || m.includes('mandatory') || m.includes('required') || m.includes('not supported') || m.includes('invalid') || m.includes('first define')) {
+        type = 'error';
+      } else if (m.includes('success') || m.includes('placed') || m.includes('authorized') || m.includes('connected') || m.includes('registered') || m.includes('added')) {
+        type = 'success';
+      } else if (m.includes('warn') || m.includes('attention')) {
+        type = 'warning';
+      }
+      showToast(msg, type);
+    };
+    
+    window.alert = handleInterceptAlert;
+  }, []);
+
   // Navigation
   const [activeView, setActiveView] = useState<'home' | 'menu' | 'user' | 'admin' | 'tracking' | 'reservations'>('home');
 
@@ -163,6 +196,11 @@ export default function App() {
         DISCOVERY_ITEMS.forEach((discItem) => {
           if (!mergedFoods.some(f => f.id === discItem.id)) {
             mergedFoods.push(discItem);
+          }
+        });
+        BUDGET_FOODS.forEach((bufItem) => {
+          if (!mergedFoods.some(f => f.id === bufItem.id)) {
+            mergedFoods.push(bufItem);
           }
         });
         setFoods(mergedFoods);
@@ -578,7 +616,14 @@ export default function App() {
 
       {/* Main Multi route render view */}
       <main className="min-h-[80vh]">
-        <AnimatePresence mode="wait">
+        <ErrorBoundary>
+          <React.Suspense fallback={
+            <div className="min-h-[60vh] w-full flex flex-col items-center justify-center gap-4 text-white bg-[#0d0d0d]">
+              <div className="h-10 w-10 border-4 border-[#FF5A1F] border-t-transparent rounded-full animate-spin shadow-lg" />
+              <p className="font-mono text-xs tracking-widest text-neutral-400 uppercase animate-pulse">Summoning Spex Suite...</p>
+            </div>
+          }>
+            <AnimatePresence mode="wait">
           {activeView === 'home' && (
             <motion.div
               key="home"
@@ -591,6 +636,22 @@ export default function App() {
                 onExploreMenu={() => setActiveView('menu')}
                 onAskAI={() => setIsAIModalOpen(true)}
                 addToCart={addToCart}
+              />
+
+              {/* Food Discovery Slider Slider carousel */}
+              <FoodDiscoverySlider
+                addToCart={addToCart}
+                toggleWishlist={toggleWishlist}
+                wishlist={wishlist}
+                onOpenDirectOrder={handleOpenDirectOrder}
+              />
+
+              {/* Premium Budget Section */}
+              <OrderByBudget
+                addToCart={addToCart}
+                toggleWishlist={toggleWishlist}
+                wishlist={wishlist}
+                onOpenDirectOrder={handleOpenDirectOrder}
               />
 
               {/* Home interactive Trending spotlight carousel */}
@@ -906,6 +967,8 @@ export default function App() {
 
         {/* Beautiful Testimonials & Customer Reviews Section at the very end of the page */}
         <TestimonialsSection />
+        </React.Suspense>
+        </ErrorBoundary>
       </main>
 
       {/* FOOTER */}
@@ -1077,14 +1140,16 @@ export default function App() {
       />
 
       {/* AI Sommelier Search Matching Conversational Drawer */}
-      <AIChatModal
-        isOpen={isAIModalOpen}
-        onClose={() => setIsAIModalOpen(false)}
-        foods={foods}
-        addToCart={addToCart}
-        wishlist={wishlist}
-        toggleWishlist={toggleWishlist}
-      />
+      <React.Suspense fallback={null}>
+        <AIChatModal
+          isOpen={isAIModalOpen}
+          onClose={() => setIsAIModalOpen(false)}
+          foods={foods}
+          addToCart={addToCart}
+          wishlist={wishlist}
+          toggleWishlist={toggleWishlist}
+        />
+      </React.Suspense>
 
       {/* Connect Account Login Overlay Modal */}
       <AnimatePresence>
@@ -1244,6 +1309,45 @@ export default function App() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Global Gorgeous Toast Notification System Overlay */}
+      <div className="fixed bottom-6 right-6 z-[1000] flex flex-col gap-3 w-full max-w-sm pointer-events-none">
+        <AnimatePresence>
+          {toasts.map((t) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.2 } }}
+              className="pointer-events-auto shadow-2xl rounded-2xl p-4 border border-neutral-800 bg-[#141414]/95 backdrop-blur-md flex items-start gap-3.5 relative overflow-hidden"
+            >
+              <div className={`absolute top-0 bottom-0 left-0 w-1 ${
+                t.type === 'success' ? 'bg-emerald-500' :
+                t.type === 'error' ? 'bg-rose-500' :
+                t.type === 'warning' ? 'bg-amber-500' : 'bg-blue-500'
+              }`} />
+              
+              <div className="flex-1 space-y-0.5 text-left pl-1">
+                <span className="text-[10px] font-black uppercase font-mono tracking-widest text-neutral-400">
+                  {t.type === 'success' ? '✓ ACTION VERIFIED' :
+                   t.type === 'error' ? '✕ TRANSACTION ERROR' :
+                   t.type === 'warning' ? '⚠ ATTENTION REQUIRED' : 'ℹ SYSTEM DIRECTIVE'}
+                </span>
+                <p className="text-[11px] text-neutral-200 mt-1 font-sans leading-relaxed">
+                  {t.message}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setToasts(prev => prev.filter(item => item.id !== t.id))}
+                className="text-neutral-500 hover:text-white shrink-0 p-0.5 cursor-pointer transition"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

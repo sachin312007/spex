@@ -10,6 +10,96 @@ const PORT = 3000;
 
 app.use(express.json());
 
+// --- ENTERPRISE SECURITY & TRAFFIC PROTECTION MIDDLEWARE ---
+
+// Anti-XSS and Input Sanitization utility for storing trusted payload string properties
+function cleanInputString(val: any): any {
+  if (typeof val !== 'string') return val;
+  // Deep sanitization to strip dangerous elements and escape raw inputs to block HTML/XSS injection
+  return val
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
+
+function sanitizePayload(payload: any): any {
+  if (!payload) return payload;
+  if (typeof payload === 'string') {
+    return cleanInputString(payload);
+  }
+  if (Array.isArray(payload)) {
+    return payload.map(item => sanitizePayload(item));
+  }
+  if (typeof payload === 'object') {
+    const cleaned: any = {};
+    for (const key of Object.keys(payload)) {
+      cleaned[key] = sanitizePayload(payload[key]);
+    }
+    return cleaned;
+  }
+  return payload;
+}
+
+// In-Memory client-based rate limiting table to handle high peaks and prevent brute force
+interface RateLimitRecord {
+  count: number;
+  resetAt: number;
+}
+const rateLimitMap = new Map<string, RateLimitRecord>();
+
+// Clean up stale IP records from the rate limiter map every 5 minutes to prevent memory leaks
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, record] of rateLimitMap.entries()) {
+    if (now > record.resetAt) {
+      rateLimitMap.delete(ip);
+    }
+  }
+}, 300000);
+
+function apiRateLimiter(req: Request, res: Response, next: () => void) {
+  const clientIp = req.ip || (req.headers['x-forwarded-for'] as string) || 'unknown';
+  const now = Date.now();
+  const record = rateLimitMap.get(clientIp);
+
+  if (!record) {
+    rateLimitMap.set(clientIp, { count: 1, resetAt: now + 60000 }); // 1-minute window
+    return next();
+  }
+
+  if (now > record.resetAt) {
+    record.count = 1;
+    record.resetAt = now + 60000;
+    return next();
+  }
+
+  record.count++;
+  if (record.count > 150) { // Limit to 150 requests per minute per client IP
+    return res.status(429).json({
+      error: 'Too many culinary inquiries. The chef is preparing your dishes with care. Please pace your requests.',
+      retryAfterSeconds: Math.ceil((record.resetAt - now) / 1000)
+    });
+  }
+
+  next();
+}
+
+// Attach rate-limiting and sanitizer pipelines to all API endpoints
+app.use('/api', apiRateLimiter);
+app.use('/api', (req: Request, res: Response, next) => {
+  if (req.body) {
+    req.body = sanitizePayload(req.body);
+  }
+  // Content Security Headers to safeguard our client-side app
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  next();
+});
+
 // Initialize Gemini SDK with telemetry header requested by standard instructions
 const ai = process.env.GEMINI_API_KEY
   ? new GoogleGenAI({
@@ -170,6 +260,8 @@ app.delete('/api/profile/address/:id', (req: Request, res: Response) => {
 
 // Get foods catalogue
 app.get('/api/foods', (req: Request, res: Response) => {
+  // Instruct client and CDNs to cache food records for 60 seconds (safe and extremely performant under peak traffic spikes)
+  res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=30');
   res.json(itemsDatabase);
 });
 
@@ -265,6 +357,8 @@ app.patch('/api/orders/:id/status', (req: Request, res: Response) => {
 
 // Get reviews
 app.get('/api/reviews', (req: Request, res: Response) => {
+  // Leverage micro-caching for reviews to ensure stability during peak traffic periods
+  res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=15');
   res.json(reviewsDatabase);
 });
 

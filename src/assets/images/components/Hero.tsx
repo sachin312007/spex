@@ -66,7 +66,7 @@ const CAROUSEL_DISHES = [
     price: 119,
     rating: 4.6,
     reviews: 124,
-    image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=600&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1541832676-9b763b0239ab?q=80&w=600&auto=format&fit=crop&crop=entropy",
     badge: "👑 SAVORY PREMIUM",
     description: "Flaky circular deep-fried shells packed with spiced moong lentils and dry ginger notes."
   },
