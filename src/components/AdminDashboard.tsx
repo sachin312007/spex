@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Order, FoodItem, Review, OrderStatus } from '../types';
-import { ChefHat, LineChart, Package, Users, DollarSign, Edit3, ClipboardList, PlusCircle, CheckCircle, Trash2, ArrowRight } from 'lucide-react';
+import { ChefHat, LineChart, Package, Users, IndianRupee, Edit3, ClipboardList, PlusCircle, CheckCircle, Trash2, ArrowRight, TrendingUp, TrendingDown, Calendar, BarChart3 } from 'lucide-react';
 
 interface AdminDashboardProps {
   orders: Order[];
@@ -22,7 +22,7 @@ export default function AdminDashboard({
   onDeleteFoodItem,
   onUpdateFoodItem,
 }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'menu' | 'reviews'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'menu' | 'reviews' | 'analytics'>('overview');
 
   // New Food Item Form States
   const [newName, setNewName] = useState('');
@@ -41,6 +41,153 @@ export default function AdminDashboard({
   const averageRating = foods.length > 0
     ? parseFloat((foods.reduce((acc, item) => acc + item.rating, 0) / foods.length).toFixed(1))
     : 4.8;
+
+  // Dynamic temporal options derived from raw food/orders database
+  const uniqueYears = Array.from(new Set(orders.map(o => {
+    try {
+      return new Date(o.createdAt).getFullYear();
+    } catch (_) {
+      return new Date().getFullYear();
+    }
+  }))).sort((a, b) => b - a);
+
+  const uniqueMonths = Array.from(new Set(orders.map(o => {
+    try {
+      const d = new Date(o.createdAt);
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      return `${d.getFullYear()}-${m}`;
+    } catch (_) {
+      const d = new Date();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      return `${d.getFullYear()}-${m}`;
+    }
+  }))).sort((a, b) => b.localeCompare(a));
+
+  const uniqueDates = Array.from(new Set(orders.map(o => {
+    try {
+      return o.createdAt.split('T')[0];
+    } catch (_) {
+      return new Date().toISOString().split('T')[0];
+    }
+  }))).sort((a, b) => b.localeCompare(a));
+
+  const [timeFilterMode, setTimeFilterMode] = useState<'all' | 'year' | 'month' | 'date'>('all');
+  const [selectedYearFilter, setSelectedYearFilter] = useState<number>(() => uniqueYears[0] || new Date().getFullYear());
+  const [selectedMonthFilter, setSelectedMonthFilter] = useState<string>(() => uniqueMonths[0] || `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`);
+  const [selectedDateFilter, setSelectedDateFilter] = useState<string>(() => uniqueDates[0] || new Date().toISOString().split('T')[0]);
+
+  // Process filtered orders for specific custom periods
+  const filteredOrdersForPerformance = orders.filter(o => {
+    if (timeFilterMode === 'all') return true;
+    try {
+      const d = new Date(o.createdAt);
+      if (timeFilterMode === 'year') {
+        return d.getFullYear() === selectedYearFilter;
+      }
+      if (timeFilterMode === 'month') {
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const formattedMonth = `${d.getFullYear()}-${m}`;
+        return formattedMonth === selectedMonthFilter;
+      }
+      if (timeFilterMode === 'date') {
+        const formattedDate = o.createdAt.split('T')[0];
+        return formattedDate === selectedDateFilter;
+      }
+    } catch (_) {}
+    return true;
+  });
+
+  // Calculate items quantity sold and matching revenue
+  const itemPerformanceMap: Record<string, { food: FoodItem; quantitySold: number; totalRevenue: number }> = {};
+  
+  // Initialize with all listed active foods to correctly see unsold items (least-selling)
+  foods.forEach(f => {
+    itemPerformanceMap[f.id] = {
+      food: f,
+      quantitySold: 0,
+      totalRevenue: 0,
+    };
+  });
+
+  filteredOrdersForPerformance.forEach(o => {
+    o.items.forEach(item => {
+      if (itemPerformanceMap[item.foodId]) {
+        itemPerformanceMap[item.foodId].quantitySold += item.quantity;
+        itemPerformanceMap[item.foodId].totalRevenue += item.quantity * item.priceAtOrder;
+      } else {
+        itemPerformanceMap[item.foodId] = {
+          food: {
+            id: item.foodId,
+            name: item.nameAtOrder,
+            description: '',
+            rating: 5,
+            reviewCount: 0,
+            price: item.priceAtOrder,
+            category: 'Pizza',
+            tags: [],
+            prepTime: 15,
+            calories: 300,
+            image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&auto=format&fit=crop&q=80',
+            isAvailable: true,
+          },
+          quantitySold: item.quantity,
+          totalRevenue: item.quantity * item.priceAtOrder,
+        };
+      }
+    });
+  });
+
+  const performanceList = Object.values(itemPerformanceMap);
+
+  // Highest volume sold
+  const mostSellingItems = [...performanceList].sort((a, b) => b.quantitySold - a.quantitySold);
+
+  // Lowest volume sold
+  const leastSellingItems = [...performanceList].sort((a, b) => a.quantitySold - b.quantitySold);
+
+  // Periodic statistics breakdown
+  const yearlyPerformance: Record<number, { year: number; totalRev: number; totalQty: number; orderCount: number }> = {};
+  const monthlyPerformance: Record<string, { month: string; totalRev: number; totalQty: number; orderCount: number }> = {};
+  const dailyPerformance: Record<string, { date: string; totalRev: number; totalQty: number; orderCount: number }> = {};
+
+  orders.forEach(o => {
+    try {
+      const d = new Date(o.createdAt);
+      const yr = d.getFullYear();
+      const mSym = String(d.getMonth() + 1).padStart(2, '0');
+      const mth = `${yr}-${mSym}`;
+      const dt = o.createdAt.split('T')[0];
+      const qty = o.items.reduce((acc, item) => acc + item.quantity, 0);
+
+      // Yearly Grouping
+      if (!yearlyPerformance[yr]) {
+        yearlyPerformance[yr] = { year: yr, totalRev: 0, totalQty: 0, orderCount: 0 };
+      }
+      yearlyPerformance[yr].totalRev += o.total;
+      yearlyPerformance[yr].totalQty += qty;
+      yearlyPerformance[yr].orderCount += 1;
+
+      // Monthly Grouping
+      if (!monthlyPerformance[mth]) {
+        monthlyPerformance[mth] = { month: mth, totalRev: 0, totalQty: 0, orderCount: 0 };
+      }
+      monthlyPerformance[mth].totalRev += o.total;
+      monthlyPerformance[mth].totalQty += qty;
+      monthlyPerformance[mth].orderCount += 1;
+
+      // Daily Grouping
+      if (!dailyPerformance[dt]) {
+        dailyPerformance[dt] = { date: dt, totalRev: 0, totalQty: 0, orderCount: 0 };
+      }
+      dailyPerformance[dt].totalRev += o.total;
+      dailyPerformance[dt].totalQty += qty;
+      dailyPerformance[dt].orderCount += 1;
+    } catch (_) {}
+  });
+
+  const yearlyList = Object.values(yearlyPerformance).sort((a, b) => b.year - a.year);
+  const monthlyList = Object.values(monthlyPerformance).sort((a, b) => b.month.localeCompare(a.month));
+  const dailyList = Object.values(dailyPerformance).sort((a, b) => b.date.localeCompare(a.date));
 
   const handleCreateFood = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,6 +236,7 @@ export default function AdminDashboard({
               { id: 'orders', label: `Dispatch (Active ${activeOrdersCount})` },
               { id: 'menu', label: 'Recipe Vault' },
               { id: 'reviews', label: 'Audit Reviews' },
+              { id: 'analytics', label: 'Sales & Item Analytics' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -115,7 +263,7 @@ export default function AdminDashboard({
                   <p className="text-2xl font-black mt-1">₹{totalRevenue.toLocaleString()}</p>
                 </div>
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-green-500/10 text-green-500">
-                  <DollarSign className="h-5 w-5" />
+                  <IndianRupee className="h-5 w-5" />
                 </div>
               </div>
 
@@ -495,6 +643,335 @@ export default function AdminDashboard({
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {/* Sales & Product Analytics Tab */}
+        {activeTab === 'analytics' && (
+          <div className="space-y-8">
+            
+            {/* Time period filter controls */}
+            <div className="rounded-2xl border border-neutral-800 bg-[#171717]/80 p-6 space-y-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-sm font-bold text-[#FFD166] uppercase font-mono tracking-wider flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-[#FF5A1F]" />
+                    Interactive Custom Time Filter
+                  </h3>
+                  <p className="text-[11px] text-neutral-400 mt-1">Specify date filters below to evaluate menu item popularity trends.</p>
+                </div>
+
+                {/* Filter Selector Options buttons */}
+                <div className="flex flex-wrap gap-1.5 rounded-lg bg-neutral-900/90 border border-neutral-800 p-1">
+                  {[
+                    { id: 'all', label: 'All Time' },
+                    { id: 'year', label: 'By Year' },
+                    { id: 'month', label: 'By Month' },
+                    { id: 'date', label: 'By Date' },
+                  ].map((mode) => (
+                    <button
+                      key={mode.id}
+                      onClick={() => setTimeFilterMode(mode.id as any)}
+                      className={`rounded px-3 py-1 text-[10px] font-mono uppercase font-extrabold cursor-pointer transition ${
+                        timeFilterMode === mode.id
+                          ? 'bg-[#FF5A1F] text-white'
+                          : 'text-neutral-400 hover:text-white'
+                      }`}
+                    >
+                      {mode.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Specific Period Dynamic Selectors */}
+              <div className="flex gap-4 items-center">
+                {timeFilterMode === 'year' && (
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold text-neutral-400 font-mono">Select Target Year</label>
+                    <select
+                      value={selectedYearFilter}
+                      onChange={(e) => setSelectedYearFilter(parseInt(e.target.value))}
+                      className="rounded-lg border border-neutral-800 bg-neutral-900 p-2 text-xs font-mono text-white focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]"
+                    >
+                      {uniqueYears.length === 0 ? (
+                        <option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
+                      ) : (
+                        uniqueYears.map(yr => (
+                          <option key={yr} value={yr}>{yr} Record</option>
+                        ))
+                      )}
+                    </select>
+                  </div>
+                )}
+
+                {timeFilterMode === 'month' && (
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold text-neutral-400 font-mono">Select Target Month</label>
+                    <select
+                      value={selectedMonthFilter}
+                      onChange={(e) => setSelectedMonthFilter(e.target.value)}
+                      className="rounded-lg border border-neutral-800 bg-neutral-900 p-2 text-xs font-mono text-white focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]"
+                    >
+                      {uniqueMonths.length === 0 ? (
+                        <option value={`${new Date().getFullYear()}-06`}>June 2026</option>
+                      ) : (
+                        uniqueMonths.map(mth => {
+                          const [year, month] = mth.split('-');
+                          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                          const mName = monthNames[parseInt(month) - 1] || month;
+                          return <option key={mth} value={mth}>{mName} {year}</option>;
+                        })
+                      )}
+                    </select>
+                  </div>
+                )}
+
+                {timeFilterMode === 'date' && (
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold text-neutral-400 font-mono">Select Target Date</label>
+                    <select
+                      value={selectedDateFilter}
+                      onChange={(e) => setSelectedDateFilter(e.target.value)}
+                      className="rounded-lg border border-neutral-800 bg-neutral-900 p-2 text-xs font-mono text-white focus:outline-none focus:ring-1 focus:ring-[#FF5A1F]"
+                    >
+                      {uniqueDates.length === 0 ? (
+                        <option value={new Date().toISOString().split('T')[0]}>{new Date().toISOString().split('T')[0]}</option>
+                      ) : (
+                        uniqueDates.map(dt => (
+                          <option key={dt} value={dt}>{dt}</option>
+                        ))
+                      )}
+                    </select>
+                  </div>
+                )}
+
+                {/* Show currently counted orders and stats */}
+                <div className="ml-auto bg-neutral-900 px-4 py-2.5 rounded-xl border border-neutral-800/80 text-right">
+                  <span className="text-[9px] text-neutral-500 font-mono block">FILTERED REVENUE</span>
+                  <span className="text-md font-extrabold text-[#22C55E]">
+                    ₹{filteredOrdersForPerformance.reduce((sum, ord) => sum + ord.total, 0).toLocaleString()}
+                  </span>
+                  <span className="text-[10px] block font-mono text-neutral-400 mt-0.5">
+                    ({filteredOrdersForPerformance.length} orders analyzed)
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Performance charts lists: MOST vs LEAST selling items */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              
+              {/* Most Selling Section */}
+              <div className="bg-[#171717] border border-neutral-800 rounded-2xl p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-green-500" />
+                    <h3 className="text-xs font-black text-white uppercase tracking-wider font-mono">
+                      🔥 Most Selling Items (Top Performers)
+                    </h3>
+                  </div>
+                  <span className="rounded bg-green-500/10 text-green-500 px-2 py-0.5 text-[9px] font-bold uppercase font-mono">
+                    High Demand
+                  </span>
+                </div>
+
+                <div className="space-y-3.5 max-h-[420px] overflow-y-auto pr-1">
+                  {mostSellingItems.length === 0 ? (
+                    <p className="text-neutral-500 text-xs py-8 text-center font-sans">No sales registered inside this period.</p>
+                  ) : (
+                    mostSellingItems.map((item, idx) => {
+                      const maxQty = mostSellingItems[0]?.quantitySold || 1;
+                      const percentage = Math.round((item.quantitySold / maxQty) * 100) || 0;
+                      return (
+                        <div key={item.food.id} className="bg-[#0d0d0d]/80 border border-neutral-850 rounded-xl p-3 flex items-center justify-between hover:border-neutral-800 transition">
+                          <div className="flex items-center gap-3">
+                            <div className="relative">
+                              <img src={item.food.image} alt={item.food.name} className="h-10 w-10 object-cover rounded-lg" />
+                              <span className="absolute -top-1.5 -left-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-green-600 border border-[#171717] text-[9px] font-sans font-extrabold text-white">
+                                {idx + 1}
+                              </span>
+                            </div>
+                            <div>
+                              <h4 className="text-xs font-bold text-white line-clamp-1">{item.food.name}</h4>
+                              <p className="text-[9px] text-neutral-500 font-mono mt-0.5 uppercase tracking-wider">{item.food.category}</p>
+                            </div>
+                          </div>
+
+                          <div className="text-right shrink-0">
+                            <p className="text-xs font-black text-neutral-100 font-mono">
+                              {item.quantitySold} sold
+                            </p>
+                            <p className="text-[10px] text-neutral-500 font-sans mt-0.5">
+                              Revenue: <strong className="text-white font-mono">₹{item.totalRevenue.toLocaleString()}</strong>
+                            </p>
+                            {/* Graphic performance level */}
+                            <div className="h-1 w-20 bg-neutral-800 rounded-full overflow-hidden mt-1.5">
+                              <div className="h-full bg-green-500 rounded-full" style={{ width: `${percentage}%` }} />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              {/* Least Selling Section */}
+              <div className="bg-[#171717] border border-neutral-800 rounded-2xl p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
+                  <div className="flex items-center gap-2">
+                    <TrendingDown className="h-4 w-4 text-orange-400" />
+                    <h3 className="text-xs font-black text-white uppercase tracking-wider font-mono">
+                      📉 Least Selling Items (Underperforming)
+                    </h3>
+                  </div>
+                  <span className="rounded bg-orange-500/10 text-orange-400 px-2 py-0.5 text-[9px] font-bold uppercase font-mono">
+                    Needs Attention
+                  </span>
+                </div>
+
+                <div className="space-y-3.5 max-h-[420px] overflow-y-auto pr-1">
+                  {leastSellingItems.length === 0 ? (
+                    <p className="text-neutral-500 text-xs py-8 text-center font-sans">No records found.</p>
+                  ) : (
+                    leastSellingItems.map((item, idx) => {
+                      const maxQty = mostSellingItems[0]?.quantitySold || 1;
+                      const percentage = Math.round((item.quantitySold / maxQty) * 100) || 0;
+                      return (
+                        <div key={item.food.id} className="bg-[#0d0d0d]/80 border border-neutral-850 rounded-xl p-3 flex items-center justify-between hover:border-neutral-800 transition">
+                          <div className="flex items-center gap-3">
+                            <div className="relative font-mono">
+                              <img src={item.food.image} alt={item.food.name} className="h-10 w-10 object-cover rounded-lg" />
+                              <span className="absolute -top-1.5 -left-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-neutral-800 border border-[#171717] text-[8px] font-sans font-bold text-neutral-300">
+                                {idx + 1}
+                              </span>
+                            </div>
+                            <div>
+                              <h4 className="text-xs font-bold text-white line-clamp-1">{item.food.name}</h4>
+                              <span className="inline-block bg-neutral-900 border border-neutral-800 text-[8px] px-1 text-neutral-400 rounded mt-0.5 leading-snug">{item.food.category}</span>
+                            </div>
+                          </div>
+
+                          <div className="text-right shrink-0">
+                            <p className="text-xs font-black text-neutral-100 font-mono">
+                              {item.quantitySold} sold
+                            </p>
+                            <p className="text-[10px] text-neutral-500 font-sans mt-0.5">
+                              Revenue: <strong className="text-white font-mono">₹{item.totalRevenue.toLocaleString()}</strong>
+                            </p>
+                            {/* Graphic performance level */}
+                            <div className="h-1 w-20 bg-neutral-800 rounded-full overflow-hidden mt-1.5">
+                              <div className="h-full bg-amber-600 rounded-full" style={{ width: `${percentage}%` }} />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Timeless master ledger archives: months, year, and date records */}
+            <div className="bg-[#171717] border border-neutral-800 rounded-2xl p-6 space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-neutral-800">
+                <BarChart3 className="h-5 w-5 text-[#FF5A1F]" />
+                <div>
+                  <h3 className="text-xs font-bold text-white uppercase tracking-widest font-mono">
+                    📊 Comprehensive Periodic Ledger Directory
+                  </h3>
+                  <p className="text-[11px] text-neutral-500">Master chronological aggregates computed directly from your digital checkout system.</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                
+                {/* Years ledger list */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-[10px] font-bold text-[#FFD166] uppercase font-mono tracking-wider bg-neutral-900/40 p-2 rounded border border-neutral-850">
+                    📅 Year Wise Aggregates
+                  </div>
+                  <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                    {yearlyList.length === 0 ? (
+                      <p className="text-neutral-500 text-[10px] py-4 text-center font-mono">No data collected.</p>
+                    ) : (
+                      yearlyList.map(yr => (
+                        <div key={yr.year} className="bg-[#0d0d0d] border border-neutral-850 p-3 rounded-xl flex justify-between items-center text-xs hover:border-neutral-800">
+                          <div>
+                            <span className="font-extrabold text-white text-md font-mono">{yr.year}</span>
+                            <span className="text-[9px] text-neutral-500 block font-mono">({yr.orderCount} total orders)</span>
+                          </div>
+                          <div className="text-right font-sans">
+                            <span className="text-green-500 font-mono font-bold block">₹{yr.totalRev.toLocaleString()}</span>
+                            <span className="text-[9px] text-neutral-400 font-mono italic">{yr.totalQty} items bought</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+
+                {/* Month ledger list */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-[10px] font-bold text-[#FFD166] uppercase font-mono tracking-wider bg-neutral-900/40 p-2 rounded border border-neutral-850">
+                    🌙 Month Wise Aggregates
+                  </div>
+                  <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                    {monthlyList.length === 0 ? (
+                      <p className="text-neutral-500 text-[10px] py-4 text-center font-mono">No data collected.</p>
+                    ) : (
+                      monthlyList.map(mth => {
+                        const [year, month] = mth.month.split('-');
+                        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+                        const mName = monthNames[parseInt(month) - 1] || mth.month;
+
+                        return (
+                          <div key={mth.month} className="bg-[#0d0d0d] border border-neutral-850 p-3 rounded-xl flex justify-between items-center text-xs hover:border-neutral-800">
+                            <div>
+                              <span className="font-extrabold text-[#FFD166] text-xs font-sans block">{mName} {year}</span>
+                              <span className="text-[9px] text-neutral-500 font-mono font-bold block">({mth.orderCount} orders)</span>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-green-500 font-mono font-bold block">₹{mth.totalRev.toLocaleString()}</span>
+                              <span className="text-[9px] text-neutral-400 font-mono italic">{mth.totalQty} items</span>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+
+                {/* Day ledger list */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-[10px] font-bold text-[#FFD166] uppercase font-mono tracking-wider bg-neutral-900/40 p-2 rounded border border-neutral-850">
+                    ☀️ Date Wise Aggregates
+                  </div>
+                  <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                    {dailyList.length === 0 ? (
+                      <p className="text-neutral-500 text-[10px] py-4 text-center font-mono">No data collected.</p>
+                    ) : (
+                      dailyList.map(day => (
+                        <div key={day.date} className="bg-[#0d0d0d] border border-neutral-850 p-3 rounded-xl flex justify-between items-center text-xs hover:border-neutral-800">
+                          <div>
+                            <span className="font-extrabold text-white text-xs font-mono block">{day.date}</span>
+                            <span className="text-[9px] text-neutral-500 font-mono block">({day.orderCount} orders info)</span>
+                          </div>
+                          <div className="text-right col-span-1">
+                            <span className="text-green-500 font-mono font-bold block">₹{day.totalRev.toLocaleString()}</span>
+                            <span className="text-[9px] text-neutral-400 font-mono italic">{day.totalQty} items</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
           </div>
         )}
 

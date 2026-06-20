@@ -84,134 +84,252 @@ const categoryImages: Record<string, string[]> = {
 export function getPerfectFoodImage(name: string, category: string, index: number): string {
   const lowercaseName = name.toLowerCase();
 
-  // 1. Specific Flatbreads (Naan & Kulcha)
-  if (lowercaseName.includes('naan') || lowercaseName.includes('butter naan')) {
-    return 'https://images.unsplash.com/photo-1626132647523-66f5bf380027?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('kulcha') || lowercaseName.includes('aloo kulcha')) {
-    return 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('paratha') || lowercaseName.includes('lachha paratha') || lowercaseName.includes('roti')) {
-    return 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&auto=format&fit=crop&q=80';
+  const PIZZA_POOL = [
+    'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1590947132387-155cc02f3212?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1555072956-7758afb20e8f?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1544982503-9f984c14501a?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const SAMOSA_POOL = [
+    'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const PAV_BHAJI_POOL = [
+    'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const BURGER_POOL = [
+    'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1551782450-17144efb9c50?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1521305916504-4a1121188589?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const NAAN_ROTI_POOL = [
+    'https://images.unsplash.com/photo-1626132647523-66f5bf380027?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1601356616077-695728ae17cb?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1541832676-9b763b0239ab?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const DOSA_POOL = [
+    'https://images.unsplash.com/photo-1645177625172-895770ca882e?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const BIRYANI_POOL = [
+    'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1642821373181-696a54913e9a?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1625220194771-7ebdea0b70b9?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1631515223363-2f9d4530fc4a?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1541832676-9b763b0239ab?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1625220195759-dd9398863c0a?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const KEBAB_TIKKA_POOL = [
+    'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1626074353765-517a681e40be?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1632778149955-e80f8ceca2e8?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const CHOWMEIN_POOL = [
+    'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1612966608967-30914e7401d6?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const MOMOS_POOL = [
+    'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1496116211227-15afb8a8cbcc?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const SPRING_ROLL_POOL = [
+    'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1542826438-bd32f43d626f?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1562967914-608f82629710?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const CURRY_POOL = [
+    'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1618040996337-56904b7850b9?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1545247181-516773cae7bc?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const DESSERT_POOL = [
+    'https://images.unsplash.com/photo-1587314168485-3236d6710814?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1605666807802-9a1bf7494441?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1524351199679-46cddf530c04?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const BEVERAGE_POOL = [
+    'https://images.unsplash.com/photo-1541658016709-82535e94bc69?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1497534446932-c925b458314e?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const PANIPURI_POOL = [
+    'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1626132027584-6d9bba1e9e73?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const TACOS_POOL = [
+    'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1615870216519-2f9fa575fa5c?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const SUSHI_POOL = [
+    'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1583623025817-d180a2221d0a?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const RAMEN_POOL = [
+    'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1557872943-16a5ac26437e?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1591814468924-caf88d1232e1?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  const COMBO_POOL = [
+    'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&auto=format&fit=crop&q=80'
+  ];
+
+  // Robust deterministic hashing helper
+  const getHash = (str: string, size: number, salt: number) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash << 5) - hash + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return Math.abs(hash + salt) % size;
+  };
+
+  // Determine which pool to use based on title word matching (rule: Title is the source of truth)
+  let selectedPool = null;
+
+  if (lowercaseName.includes('pani puri') || lowercaseName.includes('golgappa')) {
+    selectedPool = PANIPURI_POOL;
+  } else if (lowercaseName.includes('bhel') || lowercaseName.includes('bhelpuri')) {
+    selectedPool = ['https://images.unsplash.com/photo-1541832676-9b763b0239ab?w=600&auto=format&fit=crop&q=80'];
+  } else if (lowercaseName.includes('dahi puri') || lowercaseName.includes('sev puri') || lowercaseName.includes('dahi sev') || lowercaseName.includes('dahi bhalla')) {
+    selectedPool = ['https://images.unsplash.com/photo-1566417713040-40db38e61e05?w=600&auto=format&fit=crop&q=80'];
+  } else if (lowercaseName.includes('samosa')) {
+    selectedPool = SAMOSA_POOL;
+  } else if (lowercaseName.includes('kachori')) {
+    selectedPool = ['https://images.unsplash.com/photo-1541832676-9b763b0239ab?w=600&auto=format&fit=crop&q=80'];
+  } else if (lowercaseName.includes('pav bhaji')) {
+    selectedPool = PAV_BHAJI_POOL;
+  } else if (lowercaseName.includes('vada pav') || lowercaseName.includes('vada')) {
+    selectedPool = ['https://images.unsplash.com/photo-1542571361-a50172294c94?w=600&auto=format&fit=crop&q=80'];
+  } else if (lowercaseName.includes('momo') || lowercaseName.includes('momos') || lowercaseName.includes('dim sum') || lowercaseName.includes('gyoza')) {
+    selectedPool = MOMOS_POOL;
+  } else if (lowercaseName.includes('spring roll') || lowercaseName.includes('springroll')) {
+    selectedPool = SPRING_ROLL_POOL;
+  } else if (lowercaseName.includes('chowmein') || lowercaseName.includes('noodle') || lowercaseName.includes('noodles') || lowercaseName.includes('hakka') || lowercaseName.includes('chow mein')) {
+    selectedPool = CHOWMEIN_POOL;
+  } else if (lowercaseName.includes('pizza') || lowercaseName.includes('margherita') || lowercaseName.includes('focaccia')) {
+    selectedPool = PIZZA_POOL;
+  } else if (lowercaseName.includes('burger') || lowercaseName.includes('cheeseburger')) {
+    selectedPool = BURGER_POOL;
+  } else if (lowercaseName.includes('taco') || lowercaseName.includes('tacos')) {
+    selectedPool = TACOS_POOL;
+  } else if (lowercaseName.includes('sushi') || lowercaseName.includes('maki')) {
+    selectedPool = SUSHI_POOL;
+  } else if (lowercaseName.includes('ramen')) {
+    selectedPool = RAMEN_POOL;
+  } else if (lowercaseName.includes('dosa') || lowercaseName.includes('masala dosa') || lowercaseName.includes('idli')) {
+    selectedPool = DOSA_POOL;
+  } else if (lowercaseName.includes('naan') || lowercaseName.includes('kulcha') || lowercaseName.includes('paratha') || lowercaseName.includes('roti') || lowercaseName.includes('flatbread')) {
+    selectedPool = NAAN_ROTI_POOL;
+  } else if (lowercaseName.includes('paneer tikka') || lowercaseName.includes('kebab') || lowercaseName.includes('kebabs') || lowercaseName.includes('seekh') || lowercaseName.includes('tikka') || lowercaseName.includes('malai murgh') || lowercaseName.includes('shaslik')) {
+    selectedPool = KEBAB_TIKKA_POOL;
+  } else if (lowercaseName.includes('biryani') || lowercaseName.includes('pulao') || lowercaseName.includes('rice') || lowercaseName.includes('basmati')) {
+    selectedPool = BIRYANI_POOL;
+  } else if (lowercaseName.includes('curry') || lowercaseName.includes('makhani') || lowercaseName.includes('rogan') || lowercaseName.includes('gravy') || lowercaseName.includes('dal') || lowercaseName.includes('chole') || lowercaseName.includes('chana')) {
+    selectedPool = CURRY_POOL;
+  } else if (lowercaseName.includes('kulfi') || lowercaseName.includes('jamun') || lowercaseName.includes('halwa') || lowercaseName.includes('tukda') || lowercaseName.includes('cheesecake') || lowercaseName.includes('pastry') || lowercaseName.includes('cake') || lowercaseName.includes('dessert') || lowercaseName.includes('sweet')) {
+    selectedPool = DESSERT_POOL;
+  } else if (lowercaseName.includes('lassi') || lowercaseName.includes('chai') || lowercaseName.includes('tea') || lowercaseName.includes('shake') || lowercaseName.includes('milkshake') || lowercaseName.includes('beverage') || lowercaseName.includes('drink') || lowercaseName.includes('mojito') || lowercaseName.includes('elixir') || lowercaseName.includes('sherbet')) {
+    selectedPool = BEVERAGE_POOL;
+  } else if (lowercaseName.includes('thali') || lowercaseName.includes('platter') || lowercaseName.includes('combo') || lowercaseName.includes('feast')) {
+    selectedPool = COMBO_POOL;
   }
 
-  // 2. Specific Kebabs & Tikka
-  if (lowercaseName.includes('galouti') || lowercaseName.includes('kebab patty') || lowercaseName.includes('patty')) {
-    return 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('paneer tikka') || lowercaseName.includes('shaslik')) {
-    return 'https://images.unsplash.com/photo-1626074353765-517a681e40be?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('malai murgh') || lowercaseName.includes('murgh kebab') || lowercaseName.includes('chicken malai') || lowercaseName.includes('cream cheese')) {
-    return 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('seekh') || lowercaseName.includes('seekh kebab')) {
-    return 'https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=600&auto=format&fit=crop&q=80';
+  // If we matched a specialized pool, let's select a deterministic image based on hash
+  if (selectedPool && selectedPool.length > 0) {
+    const poolIdx = getHash(name, selectedPool.length, index);
+    return selectedPool[poolIdx];
   }
 
-  // 3. Specific Biryanis
-  if (lowercaseName.includes('mutton biryani') || lowercaseName.includes('baby goat') || lowercaseName.includes('lamb biryani')) {
-    return 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('chicken biryani') || lowercaseName.includes('shahi dum chicken')) {
-    return 'https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('prawn') || lowercaseName.includes('seafood') || lowercaseName.includes('prawns')) {
-    return 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('paneer biryani') || lowercaseName.includes('subz') || lowercaseName.includes('veg biryani') || lowercaseName.includes('saffron paneer biryani')) {
-    return 'https://images.unsplash.com/photo-1642821373181-696a54913e9a?w=600&auto=format&fit=crop&q=80';
+  // Fallback to category base if no precise keyword was matched in the title
+  const catLower = category.toLowerCase();
+  let fallbackPool = CURRY_POOL; // safe default
+
+  if (catLower.includes('pizza') || catLower.includes('naan') || catLower.includes('bread')) {
+    fallbackPool = NAAN_ROTI_POOL;
+  } else if (catLower.includes('burger') || catLower.includes('kebab') || catLower.includes('tikka')) {
+    fallbackPool = KEBAB_TIKKA_POOL;
+  } else if (catLower.includes('biryani')) {
+    fallbackPool = BIRYANI_POOL;
+  } else if (catLower.includes('chinese')) {
+    fallbackPool = CHOWMEIN_POOL;
+  } else if (catLower.includes('north indian') || catLower.includes('curry')) {
+    fallbackPool = CURRY_POOL;
+  } else if (catLower.includes('south indian') || catLower.includes('dosa')) {
+    fallbackPool = DOSA_POOL;
+  } else if (catLower.includes('dessert') || catLower.includes('sweet')) {
+    fallbackPool = DESSERT_POOL;
+  } else if (catLower.includes('beverage') || catLower.includes('drink')) {
+    fallbackPool = BEVERAGE_POOL;
+  } else if (catLower.includes('snack') || catLower.includes('chaat')) {
+    fallbackPool = PANIPURI_POOL;
+  } else if (catLower.includes('combo') || catLower.includes('platter')) {
+    fallbackPool = COMBO_POOL;
   }
 
-  // 4. Specific Indo-Chinese
-  if (lowercaseName.includes('noodles') || lowercaseName.includes('hakka') || lowercaseName.includes('szechuan noodles')) {
-    return 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('chilli paneer') || lowercaseName.includes('paneer dry') || lowercaseName.includes('cottage cheese cuboids')) {
-    return 'https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('manchurian') || lowercaseName.includes('gobi') || lowercaseName.includes('cauliflower')) {
-    return 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80';
-  }
-
-  // 5. Specific North Indian Curries
-  if (lowercaseName.includes('paneer makhani') || lowercaseName.includes('khoya paneer') || lowercaseName.includes('paneer butter') || lowercaseName.includes('tomato cashew')) {
-    return 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('dal') || lowercaseName.includes('dal spex') || lowercaseName.includes('black dal') || lowercaseName.includes('dal makhani') || lowercaseName.includes('lentils')) {
-    return 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('rogan josh') || lowercaseName.includes('mutton curry') || lowercaseName.includes('lamb curry') || lowercaseName.includes('rogan') || lowercaseName.includes('rogan josh lamb')) {
-    return 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('chole') || lowercaseName.includes('chana') || lowercaseName.includes('chickpeas')) {
-    return 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80';
-  }
-
-  // 6. Specific South Indian
-  if (lowercaseName.includes('dosa') || lowercaseName.includes('masala dosa')) {
-    return 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('idli') || lowercaseName.includes('podi idli')) {
-    return 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('appam') || lowercaseName.includes('stew') || lowercaseName.includes('pancakes')) {
-    return 'https://images.unsplash.com/photo-1541832676-9b763b0239ab?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('pepper chicken') || lowercaseName.includes('chettinad') || lowercaseName.includes('spicy black pepper chicken')) {
-    return 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=600&auto=format&fit=crop&q=80';
-  }
-
-  // 7. Specific Sweets & Desserts
-  if (lowercaseName.includes('kulfi') || lowercaseName.includes('rabri') || lowercaseName.includes('sweet condensed')) {
-    return 'https://images.unsplash.com/photo-1587314168485-3236d6710814?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('gulab jamun') || lowercaseName.includes('jamun') || lowercaseName.includes('dumplings')) {
-    return 'https://images.unsplash.com/photo-1605666807802-9a1bf7494441?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('halwa') || lowercaseName.includes('moong dal halwa')) {
-    return 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('shahi tukda') || lowercaseName.includes('tukda') || lowercaseName.includes('brioche')) {
-    return 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80';
-  }
-
-  // 8. Specific Beverages & Churns
-  if (lowercaseName.includes('lassi') || lowercaseName.includes('yogurt whip')) {
-    return 'https://images.unsplash.com/photo-1541658016709-82535e94bc69?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('chai') || lowercaseName.includes('tea') || lowercaseName.includes('masala chai')) {
-    return 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('mango shake') || lowercaseName.includes('mango shake') || lowercaseName.includes('mango')) {
-    return 'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('milkshake') || lowercaseName.includes('shake')) {
-    return 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=600&auto=format&fit=crop&q=80';
-  }
-
-  // 9. Specific Snacks
-  if (lowercaseName.includes('samosa') || lowercaseName.includes('samosas') || lowercaseName.includes('triangular pastry')) {
-    return 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('vada pav') || lowercaseName.includes('vada') || lowercaseName.includes('pav')) {
-    return 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('chaat') || lowercaseName.includes('dahi bhalla') || lowercaseName.includes('bhalla')) {
-    return 'https://images.unsplash.com/photo-1566417713040-40db38e61e05?w=600&auto=format&fit=crop&q=80';
-  }
-
-  // 10. Specific Thali / Combo
-  if (lowercaseName.includes('thali') || lowercaseName.includes('maharaja thali') || lowercaseName.includes('maharaja')) {
-    return 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80';
-  }
-  if (lowercaseName.includes('south indian feast') || lowercaseName.includes('feast')) {
-    return 'https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=600&auto=format&fit=crop&q=80';
-  }
-
-  // Fallback to the beautiful category-specific image pools
-  const pool = categoryImages[category] || categoryImages['Pizza'];
-  return pool[index % pool.length];
+  const poolIdx = getHash(name, fallbackPool.length, index);
+  return fallbackPool[poolIdx];
 }
 
 const prefixes = [

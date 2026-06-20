@@ -13,6 +13,7 @@ import AdminDashboard from './components/AdminDashboard';
 import AIChatModal from './components/AIChatModal';
 import TestimonialsSection from './components/TestimonialsSection';
 import SwipeDeck from './components/SwipeDeck';
+import FoodDiscoverySlider, { DISCOVERY_ITEMS } from './components/FoodDiscoverySlider';
 import ReservationsSection from './components/ReservationsSection';
 import { FoodItem, CartItem, Order, Review, UserProfile, Address, Coupon, OrderStatus, AddOn, Reservation } from './types';
 import { LogIn, ArrowRight, X, Heart, Star, Sparkles, Navigation, CookingPot, Flame, ShieldCheck } from 'lucide-react';
@@ -77,6 +78,8 @@ export default function App() {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginUserId, setLoginUserId] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [loginAsAdmin, setLoginAsAdmin] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   // Dietary Preference Filter State
   const [dietaryPreference, setDietaryPreference] = useState<'All' | 'Vegan' | 'Gluten-Free' | 'High-Protein'>('All');
@@ -156,7 +159,13 @@ export default function App() {
         const oData = await ordersRes.json();
         const rData = await reviewsRes.json();
 
-        setFoods(fData);
+        const mergedFoods = [...fData];
+        DISCOVERY_ITEMS.forEach((discItem) => {
+          if (!mergedFoods.some(f => f.id === discItem.id)) {
+            mergedFoods.push(discItem);
+          }
+        });
+        setFoods(mergedFoods);
         setUser(pData.profile);
         setAddresses(pData.addresses);
         setOrders(oData);
@@ -461,31 +470,65 @@ export default function App() {
   };
 
   // Handle Connecting account mock
+  const handleGoogleGmailLogin = () => {
+    setIsGoogleLoading(true);
+    setTimeout(() => {
+      setIsGoogleLoading(false);
+      setUser({
+        name: 'GMAIL ADMIN',
+        email: 'admin.dashboard@gmail.com',
+        phone: '+91 99999 88888',
+        joinedDate: new Date().toISOString().split('T')[0],
+        loyaltyPoints: 9500,
+        loyaltyTier: 'Platinum',
+        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+        isAdmin: true,
+        role: 'Admin',
+      });
+      setIsLoginModalOpen(false);
+      alert("Successfully Authorized via Google Gmail API! Admin Control Granted.");
+    }, 1200);
+  };
+
   const handleMockLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (loginMethod === 'email') {
       if (loginEmail.trim() === '') return;
+      const isGmail = loginEmail.toLowerCase().endsWith('@gmail.com') || loginEmail.toLowerCase().includes('gmail');
+      const becomeAdmin = loginAsAdmin || isGmail || loginEmail.toLowerCase().includes('admin');
+      
       setUser({
         name: loginEmail.split('@')[0].toUpperCase(),
         email: loginEmail,
         phone: '+91 97799 90022',
         joinedDate: new Date().toISOString().split('T')[0],
-        loyaltyPoints: 120,
-        loyaltyTier: 'Silver',
-        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+        loyaltyPoints: becomeAdmin ? 9999 : 120,
+        loyaltyTier: becomeAdmin ? 'Platinum' : 'Silver',
+        avatar: becomeAdmin 
+          ? 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'
+          : 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+        isAdmin: becomeAdmin,
+        role: becomeAdmin ? 'Admin' : 'User',
       });
       setIsLoginModalOpen(false);
-      alert(`Connected: Welcoming ${loginEmail.split('@')[0]} to the Spex private lounge!`);
+      if (becomeAdmin) {
+        alert(`Connected with Gmail: Welcoming Admin ${loginEmail.split('@')[0]} with VIP control permissions!`);
+      } else {
+        alert(`Connected: Welcoming ${loginEmail.split('@')[0]} to the Spex private lounge!`);
+      }
     } else {
       if (loginUserId.trim() === '') return;
+      const becomeAdmin = loginUserId.toLowerCase().includes('admin') || loginAsAdmin;
       setUser({
         name: loginUserId.trim().toUpperCase(),
         email: `${loginUserId.trim().toLowerCase()}@spexsystems.com`,
         phone: '+91 98888 77711',
         joinedDate: new Date().toISOString().split('T')[0],
-        loyaltyPoints: 200,
+        loyaltyPoints: becomeAdmin ? 9999 : 200,
         loyaltyTier: 'Platinum',
         avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
+        isAdmin: becomeAdmin,
+        role: becomeAdmin ? 'Admin' : 'User',
       });
       setIsLoginModalOpen(false);
       alert(`Connected: Welcoming VIP Member ${loginUserId} to the Spex private lounge!`);
@@ -547,6 +590,7 @@ export default function App() {
               <Hero
                 onExploreMenu={() => setActiveView('menu')}
                 onAskAI={() => setIsAIModalOpen(true)}
+                addToCart={addToCart}
               />
 
               {/* Home interactive Trending spotlight carousel */}
@@ -606,7 +650,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Special Tinder-Style Culinary Swipe Deck */}
+               {/* Special Tinder-Style Culinary Swipe Deck */}
               <SwipeDeck
                 foods={foods}
                 addToCart={addToCart}
@@ -1134,8 +1178,27 @@ export default function App() {
                   />
                 </div>
 
-                <div className="text-[10px] text-yellow-400/80 leading-snug bg-yellow-500/5 rounded-lg p-2.5 border border-yellow-500/15 text-left">
-                  🌟 Use code <span className="font-extrabold text-white bg-yellow-500/20 px-1 rounded">FIRST90</span> to get up to 90% discount on your first checkout!
+                {/* Secure toggle option for Admin check */}
+                <div className="flex items-center gap-2.5 bg-neutral-900/60 p-2.5 rounded-xl border border-neutral-850 text-left">
+                  <input
+                    type="checkbox"
+                    id="loginAdminToggle"
+                    checked={loginAsAdmin}
+                    onChange={(e) => setLoginAsAdmin(e.target.checked)}
+                    className="h-4 w-4 rounded border-neutral-800 bg-neutral-950 text-[#FF5A1F] focus:ring-[#FF5A1F]"
+                  />
+                  <label htmlFor="loginAdminToggle" className="text-[10px] text-neutral-300 font-semibold cursor-pointer select-none">
+                    Log in with authorized Admin rights 🛠️ <span className="text-neutral-500 font-normal">(Gmail or ID)</span>
+                  </label>
+                </div>
+
+                <div className="text-[10px] text-yellow-400/80 leading-snug bg-yellow-500/5 rounded-lg p-2.5 border border-yellow-500/15 text-left space-y-1">
+                  <div>
+                    🌟 Use code <span className="font-extrabold text-white bg-yellow-500/20 px-1 rounded">FIRST90</span> to get up to 90% discount on your first checkout!
+                  </div>
+                  <div className="text-neutral-400 text-[9px] font-mono">
+                    💡 Tip: Log in with any <strong className="text-neutral-300">@gmail.com</strong> address to run with Admin session.
+                  </div>
                 </div>
 
                 <button
@@ -1143,6 +1206,38 @@ export default function App() {
                   className="w-full rounded-xl bg-gradient-to-r from-[#FF5A1F] to-[#FF8C42] py-3.5 font-bold text-white shadow-lg cursor-pointer hover:brightness-110 tracking-wide uppercase text-xs"
                 >
                   Authorize Connect
+                </button>
+
+                {/* Google Gmail Quick Authenticator segment */}
+                <div className="relative flex py-2 items-center">
+                  <div className="flex-grow border-t border-neutral-850"></div>
+                  <span className="flex-shrink mx-4 text-neutral-500 text-[10px] font-mono tracking-wider uppercase">Or connected via</span>
+                  <div className="flex-grow border-t border-neutral-850"></div>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={isGoogleLoading}
+                  onClick={handleGoogleGmailLogin}
+                  className="w-full relative flex items-center justify-center gap-3 rounded-xl bg-white hover:bg-neutral-100 text-neutral-900 py-3.5 text-xs font-bold transition-all shadow-md cursor-pointer disabled:opacity-50"
+                >
+                  {isGoogleLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin" />
+                      <span className="font-mono text-neutral-600 text-[10px]">Contacting Google OAuth API...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/00/003">
+                        <path
+                          className="gmail-red"
+                          fill="#EA4335"
+                          d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM4 6l8 5 8-5v2l-8 5-8-5V6zm0 12V8.5l8 5 8-5V18H4z"
+                        />
+                      </svg>
+                      <span>Authorize with Gmail (Google) as Admin</span>
+                    </>
+                  )}
                 </button>
               </form>
             </motion.div>

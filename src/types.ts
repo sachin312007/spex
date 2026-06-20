@@ -100,6 +100,8 @@ export interface UserProfile {
   loyaltyPoints: number;
   loyaltyTier: 'Silver' | 'Gold' | 'Platinum';
   avatar?: string;
+  isAdmin?: boolean;
+  role?: 'Admin' | 'User';
 }
 
 export interface Reservation {
