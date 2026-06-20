@@ -1,0 +1,10 @@
+{
+  "name": "Spex",
+  "description": "Enterprise-grade luxury restaurant and food ordering platform offering exceptional food delivered fast.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
