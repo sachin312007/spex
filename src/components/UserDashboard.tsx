@@ -66,7 +66,7 @@ export default function UserDashboard({
         {/* Profile Card Header */}
         <div className="bg-[#0c0c0c] border border-neutral-855 rounded-[30px] p-6 sm:p-8 flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
           <div className="flex flex-col md:flex-row items-center gap-6">
-            <img src={user.avatar} alt={user.name} className="h-20 w-20 rounded-2xl object-cover border border-[#FF5A1F]/30 bg-neutral-950 pointer-events-none select-none" />
+            <img src={user.avatar} alt={user.name} className="h-20 w-20 rounded-2xl object-cover border border-[#FF5A1F]/30 bg-neutral-950 pointer-events-none select-none" referrerPolicy="no-referrer" />
             <div className="space-y-1.5 text-center md:text-left">
               <h2 className="text-xl font-extrabold text-white font-sans">{user.name}</h2>
               <p className="text-xs text-neutral-400 font-sans">{user.email} • {user.phone}</p>

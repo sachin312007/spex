@@ -30,9 +30,12 @@ export default function MenuSection({
   const filteredFoods = useMemo(() => {
     return foods.filter((food) => {
       const matchCategory = selectedCategory === 'All' || food.category === selectedCategory;
-      const matchSearch = food.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          food.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          food.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+      const name = typeof food.name === 'string' ? food.name : '';
+      const description = typeof food.description === 'string' ? food.description : '';
+      const tags = Array.isArray(food.tags) ? food.tags : [];
+      const matchSearch = name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          tags.some(t => typeof t === 'string' && t.toLowerCase().includes(searchQuery.toLowerCase()));
       return matchCategory && matchSearch;
     });
   }, [foods, selectedCategory, searchQuery]);
@@ -127,9 +130,9 @@ export default function MenuSection({
               className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             >
               {sortedFoods.map((food) => {
-                const isItemInCart = cart.some((c) => c.foodId === food.id && !c.savedForLater);
-                const cartQty = cart.find((c) => c.foodId === food.id && !c.savedForLater)?.quantity || 0;
-                const isFavorited = wishlist.includes(food.id);
+                const isItemInCart = Array.isArray(cart) && cart.some((c) => c && c.foodId === food.id && !c.savedForLater);
+                const cartQty = Array.isArray(cart) ? (cart.find((c) => c && c.foodId === food.id && !c.savedForLater)?.quantity || 0) : 0;
+                const isFavorited = Array.isArray(wishlist) && wishlist.includes(food.id);
 
                 return (
                   <motion.div

@@ -20,7 +20,12 @@ export default function VegSection({
 }: VegSectionProps) {
   // Filter pure veg items based on tags or categories. All items in Spex are vegetarian!
   const vegFoods = React.useMemo(() => {
-    return foods.filter((f) => f.tags.some(t => t.toLowerCase().includes('veg') || t.toLowerCase().includes('healthy'))).slice(0, 4);
+    if (!Array.isArray(foods)) return [];
+    return foods.filter((f) => {
+      if (!f) return false;
+      const tags = Array.isArray(f.tags) ? f.tags : [];
+      return tags.some(t => typeof t === 'string' && (t.toLowerCase().includes('veg') || t.toLowerCase().includes('healthy')));
+    }).slice(0, 4);
   }, [foods]);
 
   if (vegFoods.length === 0) return null;
@@ -56,8 +61,8 @@ export default function VegSection({
         {/* Veg catalog grid */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {vegFoods.map((food, i) => {
-            const isInCart = cart.some((c) => c.foodId === food.id && !c.savedForLater);
-            const qty = cart.find((c) => c.foodId === food.id && !c.savedForLater)?.quantity || 0;
+            const isInCart = Array.isArray(cart) && cart.some((c) => c && c.foodId === food.id && !c.savedForLater);
+            const qty = Array.isArray(cart) ? (cart.find((c) => c && c.foodId === food.id && !c.savedForLater)?.quantity || 0) : 0;
 
             return (
               <motion.div

@@ -133,7 +133,7 @@ export default function Header({
                     activeView === 'user' ? 'border-[#FF5A1F]' : 'border-neutral-850'
                   }`}
                 >
-                  <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
+                  <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
                 </button>
                 {(user.role === 'Admin' || user.isAdmin) && (
                   <button

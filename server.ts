@@ -120,7 +120,7 @@ let userProfile: UserProfile = {
   joinedDate: '2026-01-15',
   loyaltyPoints: 340,
   loyaltyTier: 'Gold',
-  avatar: 'https://images.unsplash.com/photo-1607990283143-e81e7a2c93ab?w=150&auto=format&fit=crop&q=80',
+  avatar: 'https://images.unsplash.com/photo-1506803682981-6e718a9dd3ee?w=150&auto=format&fit=crop&q=80',
 };
 
 let userAddresses: Address[] = [

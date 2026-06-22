@@ -122,7 +122,8 @@ export default function App() {
     if (dietaryPreference === 'Vegan') {
       return foods.filter((item) => {
         const titleAndDesc = (item.name + ' ' + item.description).toLowerCase();
-        const hasVeganTag = item.tags.some(t => {
+        const hasVeganTag = (item.tags || []).some(t => {
+          if (typeof t !== 'string') return false;
           const l = t.toLowerCase();
           return l === 'vegan' || l === 'vegan special' || l === 'vegan blend' || l === 'vegan pure' || l === 'pure veg';
         });
@@ -140,7 +141,8 @@ export default function App() {
     if (dietaryPreference === 'Gluten-Free') {
       return foods.filter((item) => {
         const titleAndDesc = (item.name + ' ' + item.description).toLowerCase();
-        const hasGFTag = item.tags.some(t => {
+        const hasGFTag = (item.tags || []).some(t => {
+          if (typeof t !== 'string') return false;
           const l = t.toLowerCase();
           return l === 'gluten free' || l === 'gluten-free' || l === 'glutenfree';
         });
@@ -160,7 +162,8 @@ export default function App() {
     if (dietaryPreference === 'High-Protein') {
       return foods.filter((item) => {
         const titleAndDesc = (item.name + ' ' + item.description).toLowerCase();
-        const hasProteinTag = item.tags.some(t => {
+        const hasProteinTag = (item.tags || []).some(t => {
+          if (typeof t !== 'string') return false;
           const l = t.toLowerCase();
           return l === 'high protein' || l === 'protein' || l === 'protein rich';
         });
@@ -519,7 +522,7 @@ export default function App() {
         joinedDate: new Date().toISOString().split('T')[0],
         loyaltyPoints: 9500,
         loyaltyTier: 'Platinum',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+        avatar: 'https://images.unsplash.com/photo-1506803682981-6e718a9dd3ee?w=150&auto=format&fit=crop&q=80',
         isAdmin: true,
         role: 'Admin',
       });
@@ -543,8 +546,8 @@ export default function App() {
         loyaltyPoints: becomeAdmin ? 9999 : 120,
         loyaltyTier: becomeAdmin ? 'Platinum' : 'Silver',
         avatar: becomeAdmin 
-          ? 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'
-          : 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+          ? 'https://images.unsplash.com/photo-1506803682981-6e718a9dd3ee?w=150&auto=format&fit=crop&q=80'
+          : 'https://images.unsplash.com/photo-1624561172888-ac93c696e10c?w=150&auto=format&fit=crop&q=80',
         isAdmin: becomeAdmin,
         role: becomeAdmin ? 'Admin' : 'User',
       });
@@ -564,7 +567,7 @@ export default function App() {
         joinedDate: new Date().toISOString().split('T')[0],
         loyaltyPoints: becomeAdmin ? 9999 : 200,
         loyaltyTier: 'Platinum',
-        avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
+        avatar: 'https://images.unsplash.com/photo-1506803682981-6e718a9dd3ee?w=150&auto=format&fit=crop&q=80',
         isAdmin: becomeAdmin,
         role: becomeAdmin ? 'Admin' : 'User',
       });
