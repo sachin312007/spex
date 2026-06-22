@@ -62,6 +62,11 @@ export interface Address {
   city: string;
   zipCode: string;
   isDefault: boolean;
+  locality?: string;
+  state?: string;
+  lat?: number;
+  lng?: number;
+  landmark?: string;
 }
 
 export type OrderStatus = 'Order Placed' | 'Confirmed' | 'Preparing' | 'Cooking' | 'Packed' | 'Out For Delivery' | 'Delivered';

@@ -12,6 +12,7 @@ interface HeaderProps {
   user: UserProfile | null;
   toggleLoginModal: () => void;
   toggleAIModal: () => void;
+  activeAddress?: any;
 }
 
 export default function Header({
@@ -22,36 +23,53 @@ export default function Header({
   openCart,
   user,
   toggleLoginModal,
-  toggleAIModal
+  toggleAIModal,
+  activeAddress
 }: HeaderProps) {
-  const navItems = [
+  const navItems: { id: 'home' | 'menu' | 'user' | 'admin' | 'tracking' | 'reservations'; label: string; icon: typeof Compass }[] = [
     { id: 'home', label: 'Explore', icon: Compass },
     { id: 'menu', label: 'Menu', icon: Sparkles },
     { id: 'reservations', label: 'Reserve Table', icon: Calendar },
     { id: 'tracking', label: 'Live Tracking', icon: History },
-  ] as const;
+    { id: 'admin', label: 'Admin Panel', icon: LayoutDashboard },
+  ];
 
   return (
     <header className="sticky top-0 z-[50] w-full border-b border-neutral-900 bg-[#070707]/80 backdrop-blur-md select-none transition-all duration-300">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between gap-4">
           
-          {/* Logo Brand */}
-          <div 
-            onClick={() => setActiveView('home')} 
-            className="flex items-center gap-2.5 cursor-pointer group active:scale-95 transition"
-          >
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#FF5A1F] to-[#FF8C42] shadow-lg shadow-[#FF5A1F]/20 group-hover:scale-105 transition-transform">
-              <span className="font-mono text-xl font-black text-white italic">S</span>
+          {/* Logo Brand and Delivery Loc Indicator */}
+          <div className="flex items-center gap-4">
+            <div 
+              onClick={() => setActiveView('home')} 
+              className="flex items-center gap-2.5 cursor-pointer group active:scale-95 transition"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#FF5A1F] to-[#FF8C42] shadow-lg shadow-[#FF5A1F]/20 group-hover:scale-105 transition-transform">
+                <span className="font-mono text-xl font-black text-white italic">S</span>
+              </div>
+              <div>
+                <span className="text-xl font-black text-white font-sans tracking-tight leading-none group-hover:text-[#FF5A1F] transition duration-200">
+                  SPEX
+                </span>
+                <span className="text-[10px] font-mono block tracking-widest text-neutral-500 font-extrabold uppercase mt-0.5">
+                  CULINARY SUITE
+                </span>
+              </div>
             </div>
-            <div>
-              <span className="text-xl font-black text-white font-sans tracking-tight leading-none group-hover:text-[#FF5A1F] transition duration-200">
-                SPEX
-              </span>
-              <span className="text-[10px] font-mono block tracking-widest text-neutral-500 font-extrabold uppercase mt-0.5">
-                CULINARY SUITE
-              </span>
-            </div>
+
+            {activeAddress && (
+              <div 
+                onClick={() => setActiveView('home')}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-900 border border-neutral-850 hover:border-neutral-750 transition duration-200 text-xs cursor-pointer"
+              >
+                <div className="h-1.5 w-1.5 rounded-full bg-[#FF5A1F]" />
+                <span className="text-[9px] font-mono font-bold text-[#FF8C42] uppercase tracking-wider shrink-0">Deliver To:</span>
+                <span className="text-[10px] font-sans font-extrabold text-neutral-300 truncate max-w-[110px]">
+                  {activeAddress.locality || activeAddress.city}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Center Navigation Links */}

@@ -258,6 +258,15 @@ app.delete('/api/profile/address/:id', (req: Request, res: Response) => {
   res.json({ message: 'Address deleted successfully', addresses: userAddresses });
 });
 
+// Update address item to default selected state
+app.put('/api/profile/address/:id/select', (req: Request, res: Response) => {
+  userAddresses = userAddresses.map((a) => ({
+    ...a,
+    isDefault: a.id === req.params.id,
+  }));
+  res.json({ message: 'Address designated as default successfully', addresses: userAddresses });
+});
+
 // Get foods catalogue
 app.get('/api/foods', (req: Request, res: Response) => {
   // Instruct client and CDNs to cache food records for 60 seconds (safe and extremely performant under peak traffic spikes)

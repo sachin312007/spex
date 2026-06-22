@@ -13,6 +13,7 @@ import TestimonialsSection from './components/TestimonialsSection';
 import SwipeDeck from './components/SwipeDeck';
 import FoodDiscoverySlider, { DISCOVERY_ITEMS } from './components/FoodDiscoverySlider';
 import OrderByBudget, { BUDGET_FOODS } from './components/OrderByBudget';
+import SmartLocationSelector from './components/SmartLocationSelector';
 
 // Code Splitting & Lazy-Loaded Bundles for high performance scaling to 10k+ concurrent users
 const UserDashboard = React.lazy(() => import('./components/UserDashboard'));
@@ -305,6 +306,18 @@ export default function App() {
     try {
       const res = await fetch(`/api/profile/address/${id}`, {
         method: 'DELETE',
+      });
+      const data = await res.json();
+      setAddresses(data.addresses);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSelectAddress = async (id: string) => {
+    try {
+      const res = await fetch(`/api/profile/address/${id}/select`, {
+        method: 'PUT',
       });
       const data = await res.json();
       setAddresses(data.addresses);
@@ -615,6 +628,7 @@ export default function App() {
         user={user}
         toggleLoginModal={() => setIsLoginModalOpen(true)}
         toggleAIModal={() => setIsAIModalOpen(true)}
+        activeAddress={addresses.find((a) => a.isDefault) || addresses[0] || null}
       />
 
       {/* Main Multi route render view */}
@@ -635,6 +649,16 @@ export default function App() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
             >
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4">
+                <SmartLocationSelector
+                  addresses={addresses}
+                  onAddAddress={handleAddAddress}
+                  onRemoveAddress={handleRemoveAddress}
+                  onSelectAddress={handleSelectAddress}
+                  activeAddress={addresses.find((a) => a.isDefault) || addresses[0] || null}
+                />
+              </div>
+
               <Hero
                 onExploreMenu={() => setActiveView('menu')}
                 onAskAI={() => setIsAIModalOpen(true)}
