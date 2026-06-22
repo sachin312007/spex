@@ -14,6 +14,8 @@ import SwipeDeck from './components/SwipeDeck';
 import FoodDiscoverySlider, { DISCOVERY_ITEMS } from './components/FoodDiscoverySlider';
 import OrderByBudget, { BUDGET_FOODS } from './components/OrderByBudget';
 import SmartLocationSelector from './components/SmartLocationSelector';
+// @ts-ignore
+import spexLogo from './assets/images/regenerated_image_1781985620664.webp';
 
 // Code Splitting & Lazy-Loaded Bundles for high performance scaling to 10k+ concurrent users
 const UserDashboard = React.lazy(() => import('./components/UserDashboard'));
@@ -609,7 +611,7 @@ export default function App() {
   const cartTotal = parseFloat((cartSubtotal - cartDiscount + cartDeliveryFee + cartTax).toFixed(2));
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] font-sans scroll-smooth text-white antialiased">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#0d0d0d] font-sans scroll-smooth text-white antialiased">
       {/* Global Promotional Announcement Ticker */}
       <div className="bg-gradient-to-r from-neutral-950 via-[#FF5A1F] to-neutral-950 text-white text-center py-2.5 px-4 border-b border-[#FF5A1F]/20 flex items-center justify-center gap-2 overflow-hidden text-xs font-semibold select-none">
         <span className="inline-flex h-2 w-2 rounded-full bg-yellow-400 animate-pulse" />
@@ -1002,94 +1004,13 @@ export default function App() {
       <footer className="border-t border-neutral-900 bg-[#0d0d0d] py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black border border-neutral-800 shadow-md">
-              <svg 
-                viewBox="0 0 100 100" 
-                className="h-full w-full"
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <defs>
-                  {/* Majestic Orange to Red Warm Luxury Gradient for Line Geometry */}
-                  <linearGradient id="footerLogoOrangeRedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#FF8C42" />
-                    <stop offset="60%" stopColor="#FF5A1F" />
-                    <stop offset="100%" stopColor="#E63946" />
-                  </linearGradient>
-                  
-                  {/* Subtle Background Glow helper */}
-                  <radialGradient id="footerInnerSultryGlow" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#FF5A1F" stopOpacity="0.15" />
-                    <stop offset="100%" stopColor="#000000" stopOpacity="0" />
-                  </radialGradient>
-                </defs>
-
-                {/* Black Background Circle */}
-                <circle cx="50" cy="50" r="50" fill="black" />
-                <circle cx="50" cy="50" r="45" fill="url(#footerInnerSultryGlow)" />
-                
-                {/* Inner shadow grey subtle geometries with warm undertone */}
-                <path 
-                  d="M50,24 L24,35 L50,51 Z" 
-                  fill="#140a05" 
-                  stroke="#261208" 
-                  strokeWidth="0.5" 
-                />
-                <path 
-                  d="M50,24 L76,35 L50,51 Z" 
-                  fill="#1a0d07" 
-                  stroke="#261208" 
-                  strokeWidth="0.5" 
-                />
-                <path 
-                  d="M10,72 L24,35 L50,57 Z" 
-                  fill="#0e0603" 
-                  stroke="#1c0c05" 
-                  strokeWidth="0.5" 
-                />
-                <path 
-                  d="M90,72 L76,35 L50,57 Z" 
-                  fill="#0c0502" 
-                  stroke="#1c0c05" 
-                  strokeWidth="0.5" 
-                />
-                <path 
-                  d="M32,59 L50,51 L68,59" 
-                  stroke="#5c2612" 
-                  strokeWidth="0.75" 
-                  strokeLinecap="round" 
-                />
-                <path 
-                  d="M32,59 L35,42 M68,59 L65,42" 
-                  stroke="#5c2612" 
-                  strokeWidth="0.75" 
-                  strokeLinecap="round" 
-                />
-                
-                {/* Primary Orange-Red Gradient Line Geometries */}
-                <polygon 
-                  points="50,24 76,35 50,57 24,35" 
-                  stroke="url(#footerLogoOrangeRedGrad)" 
-                  strokeWidth="1.5" 
-                  strokeLinejoin="round" 
-                  fill="none" 
-                />
-                <polygon 
-                  points="50,24 90,72 50,57 10,72" 
-                  stroke="url(#footerLogoOrangeRedGrad)" 
-                  strokeWidth="1.5" 
-                  strokeLinejoin="round" 
-                  fill="none" 
-                />
-                <line 
-                  x1="50" 
-                  y1="24" 
-                  x2="50" 
-                  y2="57" 
-                  stroke="url(#footerLogoOrangeRedGrad)" 
-                  strokeWidth="1.5" 
-                />
-              </svg>
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-black border border-neutral-800 hover:border-[#FF5A1F] shadow-lg shadow-[#FF5A1F]/10 overflow-hidden transition duration-300 shrink-0">
+              <img 
+                src={spexLogo} 
+                alt="SPEX" 
+                className="h-full w-full object-cover" 
+                referrerPolicy="no-referrer"
+              />
             </div>
             <div>
               <span className="font-mono text-xl font-extrabold bg-gradient-to-r from-white via-neutral-100 to-[#FF5A1F] bg-clip-text text-transparent tracking-widest uppercase">SPEX<span className="text-[#FF5A1F] font-sans">.</span></span>

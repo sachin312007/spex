@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { ShoppingBag, Heart, User, Sparkles, Compass, History, Calendar, LayoutDashboard } from 'lucide-react';
 import { UserProfile } from '../types';
+// @ts-ignore
+import spexLogo from '../assets/images/regenerated_image_1781985620664.webp';
 
 interface HeaderProps {
   cartCount: number;
@@ -45,8 +47,13 @@ export default function Header({
               onClick={() => setActiveView('home')} 
               className="flex items-center gap-2.5 cursor-pointer group active:scale-95 transition"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#FF5A1F] to-[#FF8C42] shadow-lg shadow-[#FF5A1F]/20 group-hover:scale-105 transition-transform">
-                <span className="font-mono text-xl font-black text-white italic">S</span>
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-black border-2 border-[#FF5A1F] shadow-lg shadow-[#FF5A1F]/20 group-hover:scale-105 transition duration-300 overflow-hidden shrink-0">
+                <img 
+                  src={spexLogo} 
+                  alt="SPEX" 
+                  className="h-full w-full object-cover" 
+                  referrerPolicy="no-referrer"
+                />
               </div>
               <div>
                 <span className="text-xl font-black text-white font-sans tracking-tight leading-none group-hover:text-[#FF5A1F] transition duration-200">
@@ -102,20 +109,21 @@ export default function Header({
           </nav>
 
           {/* Interactive Tools Panel */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3">
             {/* AI Assistant Button */}
             <button
               onClick={toggleAIModal}
-              className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 text-[#FF5A1F] hover:bg-[#FF5A1F]/15 transition cursor-pointer text-xs font-black font-sans tracking-wider uppercase active:scale-95 shadow-md shadow-[#FF5A1F]/5"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2.5 rounded-xl border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 text-[#FF5A1F] hover:bg-[#FF5A1F]/15 transition cursor-pointer text-xs font-black font-sans tracking-wider uppercase active:scale-95 shadow-md shadow-[#FF5A1F]/5"
+              title="AI Assistant"
             >
-              <Sparkles className="h-4 w-4 animate-pulse" />
-              AI Assistant
+              <Sparkles className="h-4 w-4 animate-pulse shrink-0" />
+              <span className="hidden sm:inline">AI Assistant</span>
             </button>
 
             {/* Wishlist Icon */}
             <button
               onClick={() => setActiveView('user')}
-              className={`relative h-10 w-10 rounded-xl flex items-center justify-center border transition cursor-pointer active:scale-95 ${
+              className={`relative h-9 w-9 sm:h-10 sm:w-10 rounded-xl flex items-center justify-center border transition cursor-pointer active:scale-95 ${
                 activeView === 'user'
                   ? 'bg-[#151515] border-neutral-800 text-white'
                   : 'bg-neutral-950 border-neutral-900 text-neutral-400 hover:text-white hover:border-neutral-800'
@@ -132,7 +140,7 @@ export default function Header({
             {/* Shopping Bag Icon button */}
             <button
               onClick={openCart}
-              className="relative h-10 w-10 rounded-xl bg-neutral-950 border border-neutral-900 text-neutral-400 hover:text-white hover:border-neutral-800 flex items-center justify-center transition cursor-pointer active:scale-95"
+              className="relative h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-neutral-950 border border-neutral-900 text-neutral-400 hover:text-white hover:border-neutral-800 flex items-center justify-center transition cursor-pointer active:scale-95"
             >
               <ShoppingBag className="h-4.5 w-4.5" />
               {cartCount > 0 && (
@@ -144,10 +152,10 @@ export default function Header({
 
             {/* Connect User Portfolio action */}
             {user ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
                   onClick={() => setActiveView('user')}
-                  className={`h-10 w-10 rounded-xl border flex items-center justify-center overflow-hidden transition cursor-pointer active:scale-95 ${
+                  className={`h-9 w-9 sm:h-10 sm:w-10 rounded-xl border flex items-center justify-center overflow-hidden transition cursor-pointer active:scale-95 ${
                     activeView === 'user' ? 'border-[#FF5A1F]' : 'border-neutral-850'
                   }`}
                 >
@@ -156,7 +164,7 @@ export default function Header({
                 {(user.role === 'Admin' || user.isAdmin) && (
                   <button
                     onClick={() => setActiveView('admin')}
-                    className={`h-10 w-10 rounded-xl border flex items-center justify-center transition cursor-pointer active:scale-95 ${
+                    className={`h-9 w-9 sm:h-10 sm:w-10 rounded-xl border flex items-center justify-center transition cursor-pointer active:scale-95 ${
                       activeView === 'admin'
                         ? 'bg-[#FF5A1F]/10 border-[#FF5A1F]/35 text-[#FF5A1F]'
                         : 'bg-neutral-950 border-neutral-900 text-neutral-400 hover:text-white hover:border-neutral-800'
@@ -170,10 +178,10 @@ export default function Header({
             ) : (
               <button
                 onClick={toggleLoginModal}
-                className="h-10 px-4 rounded-xl border border-neutral-800 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 hover:text-white transition cursor-pointer text-xs font-bold tracking-wider uppercase flex items-center gap-2 active:scale-95 shadow"
+                className="h-9 sm:h-10 px-2.5 sm:px-4 rounded-xl border border-neutral-800 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 hover:text-white transition cursor-pointer text-xs font-bold tracking-wider uppercase flex items-center gap-1.5 active:scale-95 shadow"
               >
-                <User className="h-4 w-4" />
-                Log In
+                <User className="h-4 w-4 shrink-0" />
+                <span className="hidden sm:inline">Log In</span>
               </button>
             )}
 

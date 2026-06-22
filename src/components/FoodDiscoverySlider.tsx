@@ -99,7 +99,7 @@ export default function FoodDiscoverySlider({
         </div>
 
         {/* Dynamic Display cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-full overflow-hidden">
           {DISCOVERY_ITEMS.slice(startIndex, startIndex + 2).map((item) => {
             const isFav = wishlist.includes(item.id);
             // Construct a fake FoodItem for direct ordering
@@ -124,18 +124,18 @@ export default function FoodDiscoverySlider({
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4 }}
-                className="bg-[#0d0d0d] rounded-3xl p-5 border border-neutral-855 flex gap-5 items-center hover:border-[#FF5A1F]/25 transition duration-300"
+                className="bg-[#0d0d0d] rounded-3xl p-4 sm:p-5 border border-neutral-855 flex flex-col sm:flex-row gap-4 sm:gap-5 items-center sm:items-start hover:border-[#FF5A1F]/25 transition duration-300 w-full max-w-full overflow-hidden"
               >
                 <img src={item.image} alt={item.name} className="h-28 w-28 rounded-2xl object-cover shrink-0 select-none bg-neutral-900" />
-                <div className="flex-1 min-w-0 space-y-3">
-                  <div className="space-y-1">
+                <div className="flex-1 w-full min-w-0 space-y-3">
+                  <div className="space-y-1 text-center sm:text-left">
                     <h3 className="text-sm font-extrabold text-white truncate">{item.name}</h3>
                     <p className="text-[10px] text-neutral-400 line-clamp-2 leading-relaxed">{item.description}</p>
                   </div>
 
                   {/* Rating & Action Panel */}
-                  <div className="pt-2 border-t border-neutral-900 flex items-center justify-between text-xs">
-                    <div className="flex flex-col">
+                  <div className="pt-2 border-t border-neutral-900 flex flex-row items-center justify-between text-xs w-full">
+                    <div className="flex flex-col items-start">
                       <span className="font-mono text-xs font-black text-white">₹{item.price}</span>
                       <div className="flex items-center gap-1.5 text-[9px] text-[#FFD166] mt-0.5">
                         <Star className="h-3 w-3 fill-current" />
